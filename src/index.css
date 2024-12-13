@@ -1,0 +1,58 @@
+/* Import Roboto font globally */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Global Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+}
+
+/* Header Styles */
+header {
+    border-bottom: 1px solid #eaeaea;
+    background-color: #fff;
+    padding: 10px 0;
+}
+
+/* Navbar Styles */
+.navbar-nav {
+    gap: 20px; /* Spacing between links */
+}
+
+.navbar-nav .nav-link {
+    color: #333;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.navbar-nav .nav-link.active {
+    color: #007bff; /* Highlight color for active links */
+    font-weight: 700;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #0056b3;
+}
+
+/* User Avatar Styles */
+.rounded-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Logo Text */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-container img {
+    width: 40px;
+    height: 40px;
+}

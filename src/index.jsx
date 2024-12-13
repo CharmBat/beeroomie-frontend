@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './styles/index.css';
 import App from './App';
-import 'antd/dist/reset.css';
 
-ReactDOM.render(
+import './index.css';
+import 'antd/dist/reset.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <App />
     </React.StrictMode>,
-    document.getElementById('root')
 );
