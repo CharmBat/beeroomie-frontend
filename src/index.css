@@ -1,58 +1,40 @@
-/* Import Roboto font globally */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+* {
+    font-family: 'Inter', sans-serif;
+}
 
-/* Global Styles */
 body {
-    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    background-color: #f9f9f9;
+    background: #fff;
 }
 
-/* Header Styles */
-header {
-    border-bottom: 1px solid #eaeaea;
-    background-color: #fff;
-    padding: 10px 0;
-}
-
-/* Navbar Styles */
-.navbar-nav {
-    gap: 20px; /* Spacing between links */
-}
-
-.navbar-nav .nav-link {
-    color: #333;
-    font-weight: 500;
+a {
     text-decoration: none;
 }
 
-.navbar-nav .nav-link.active {
-    color: #007bff; /* Highlight color for active links */
-    font-weight: 700;
+/* Header */
+.ant-layout-header {
+    background: #fff;
+    margin: 0;
+    padding: 0 40px;
+    border-Bottom: 1px solid #eaeaea;
+    height: 64px;
+}
+.ant-layout-header a {
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
 }
 
-.navbar-nav .nav-link:hover {
-    color: #0056b3;
+.ant-layout-header .ant-menu {
+    line-height: 64px;
+    width: 400px;
 }
 
-/* User Avatar Styles */
-.rounded-circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
+/* End Header */
 
-/* Logo Text */
-.logo-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.logo-container img {
-    width: 40px;
-    height: 40px;
+/* Content */
+.ant-layout-content {
+    background: #fff;
 }
