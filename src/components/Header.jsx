@@ -5,7 +5,7 @@ import LogoText from "./LogoText";
 import UserText from "./UserText";
 
 
-export default function AppHeader() {
+export default function AppHeader({ isLoggedIn }) {
     const location = useLocation();
     const [selectedKey, setSelectedKey] = useState("");
 
@@ -18,6 +18,14 @@ export default function AppHeader() {
         };
         setSelectedKey(pathToKeyMap[location.pathname] || "");
     }, [location.pathname]);
+
+    if (!isLoggedIn) {
+        return (
+            <Flex justify={"start"} align={"center"} gap={"20px"}>
+                <LogoText />
+            </Flex>
+        );
+    }
 
     return (
         <>
