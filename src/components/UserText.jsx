@@ -1,4 +1,4 @@
-import {Dropdown, Space} from 'antd';
+import {Dropdown} from 'antd';
 import {Link} from "react-router-dom";
 
 const items = [
@@ -22,7 +22,7 @@ export default function UserText() {
 
     return (
         <Dropdown menu={{items}}>
-            <a onClick={(e) => e.preventDefault()}>
+            <a href={"/Profile"} onClick={(e) => e.preventDefault()} className={"text-decoration-none text-black"}>
                 <div className="d-flex align-items-center gap-2" style={{cursor: "pointer"}}>
                     <img
                         alt="User Avatar"
