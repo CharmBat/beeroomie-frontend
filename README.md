@@ -18,7 +18,7 @@ The project is deployed on Netlify. You can access the deployed version of the p
 
 [https://beeroomie.netlify.app/](https://beeroomie.netlify.app/)
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/7b3b3b3b-1b7b-4b7b-8b7b-9b7b7b7b7b7b/deploy-status)](https://app.netlify.com/sites/beeroomie/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/11383f71-49bd-4e48-9ca0-e1644ab4ec9e/deploy-status)](https://app.netlify.com/sites/beeroomie/deploys)
 
 If badge is showing success, the project is deployed successfully. If not please contact the Alper Oğuz Kelleci.
 
