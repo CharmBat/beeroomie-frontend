@@ -19,7 +19,7 @@ import PublishAdvertisement from "./views/Advertisement/PublishAdvertisement";
 
 // Action
 import Compare from "./views/Action/Compare";
-import Favourite from "./views/Action/Favourite";
+import Favorite from "./views/Action/Favorite";
 
 // Other
 import PageNotFound from "./views/PageNotFound";
@@ -28,11 +28,11 @@ import PageNotFound from "./views/PageNotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 
-function AppRoutes({isLoggedIn}) {
+function AppRoutes({isLoggedIn, setIsLoggedIn}) {
     return (
         <Routes>
             <Route path="/landing" element={<PublicRoute isLoggedIn={isLoggedIn}><Landing/></PublicRoute>}/>
-            <Route path="/login" element={<PublicRoute isLoggedIn={isLoggedIn}><Login/></PublicRoute>}/>
+            <Route path="/login" element={<PublicRoute isLoggedIn={isLoggedIn}><Login setIsLoggedIn={setIsLoggedIn} /></PublicRoute>}/>
             <Route path="/register" element={<PublicRoute isLoggedIn={isLoggedIn}><Register/></PublicRoute>}/>
             <Route path="/forgot-password" element={<PublicRoute isLoggedIn={isLoggedIn}><ForgotPassword/></PublicRoute>}/>
             <Route path="/confirm-email" element={<PublicRoute isLoggedIn={isLoggedIn}><ConfirmEmail/></PublicRoute>}/>
@@ -44,7 +44,7 @@ function AppRoutes({isLoggedIn}) {
             <Route path="/publishAd" element={<ProtectedRoute isLoggedIn={isLoggedIn}><PublishAdvertisement/></ProtectedRoute>}/>
             <Route path="/profile" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Profile/></ProtectedRoute>}/>
             <Route path="/compare" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Compare/></ProtectedRoute>}/>
-            <Route path="/favourite" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Favourite/></ProtectedRoute>}/>
+            <Route path="/favorite" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Favorite/></ProtectedRoute>}/>
             <Route path="*" element={<PageNotFound/>}/>
         </Routes>
     );

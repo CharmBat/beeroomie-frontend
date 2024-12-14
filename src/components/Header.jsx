@@ -5,7 +5,7 @@ import LogoText from "./LogoText";
 import UserText from "./UserText";
 
 
-export default function AppHeader({ isLoggedIn }) {
+export default function AppHeader({ isLoggedIn, setIsLoggedIn }) {
     const location = useLocation();
     const [selectedKey, setSelectedKey] = useState("");
 
@@ -14,7 +14,7 @@ export default function AppHeader({ isLoggedIn }) {
             "/": "1",
             "/compare": "2",
             "/offer": "3",
-            "/favourite": "4",
+            "/favorite": "4",
         };
         setSelectedKey(pathToKeyMap[location.pathname] || "");
     }, [location.pathname]);
@@ -36,12 +36,12 @@ export default function AppHeader({ isLoggedIn }) {
                         <Menu.Item key="1"><Link to="/">İlanlar</Link></Menu.Item>
                         <Menu.Item key="2"><Link to="/compare">Karşılaştır</Link></Menu.Item>
                         <Menu.Item key="3"><Link to="/offer">Teklifler</Link></Menu.Item>
-                        <Menu.Item key="4"><Link to="/favourite">Favoriler</Link></Menu.Item>
+                        <Menu.Item key="4"><Link to="/favorite">Favoriler</Link></Menu.Item>
                     </Menu>
                 </Flex>
                 <Flex justify={"flex-end"} align={"center"} gap={"15px"}>
                     <Button type="primary"><Link to={"/publishAd"}>İlan Ver</Link></Button>
-                    <UserText/>
+                    <UserText setIsLoggedIn={setIsLoggedIn} />
                 </Flex>
             </Flex>
         </>

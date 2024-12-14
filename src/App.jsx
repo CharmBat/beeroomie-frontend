@@ -1,6 +1,6 @@
 import { Layout } from "antd";
 import { BrowserRouter as Router } from "react-router-dom";
-import { useState} from "react";
+import { useState } from "react";
 
 import AppHeader from "./components/Header";
 import AppRoutes from "./AppRoutes";
@@ -14,10 +14,10 @@ function App() {
         <Layout>
             <Router>
                 <Header>
-                    <AppHeader isLoggedIn={isLoggedIn} />
+                    <AppHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
                 </Header>
                 <Content>
-                    <AppRoutes isLoggedIn={isLoggedIn} />
+                    <AppRoutes isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
                 </Content>
             </Router>
         </Layout>
