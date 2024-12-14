@@ -146,7 +146,7 @@ export default function AdCard({
                     </Tag>
                 </Col>
                 <Col>
-                    <a href="#" style={{ color: "#1890ff" }}>
+                    <a href="/" style={{ color: "#1890ff" }}>
                         Detaylar
                     </a>
                 </Col>
