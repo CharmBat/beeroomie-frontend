@@ -24,8 +24,8 @@ import Favorite from "./views/Action/Favorite";
 import PageNotFound from "./views/PageNotFound";
 
 // Route Guards
-import ProtectedRoute from "./components/ProtectedRoute";
-import PublicRoute from "./components/PublicRoute";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicRoute from "./routes/PublicRoute";
 
 function AppRoutes({isLoggedIn, setIsLoggedIn}) {
     return (

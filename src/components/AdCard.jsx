@@ -78,7 +78,7 @@ export default function AdCard({
 
             {/* Thumbnails */}
             <Row gutter={[8, 8]} style={{ marginBottom: "10px" }}>
-                {images.map((image, index) => (
+                {images.slice(0, 4).map((image, index) => (
                     <Col key={index} span={6}>
                         <img
                             alt={`Thumbnail ${index + 1}`}
