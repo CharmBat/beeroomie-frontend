@@ -1,27 +1,28 @@
-import { Card, Form, Input, Select, Checkbox, Button, Row, Col } from 'antd';
+import { Card, Form, Input, Select, Button, Row, Col } from 'antd';
+import { TwoRadio, ThreeRadio } from "./FilterRadio";
 
 const { Option } = Select;
 
-export default function Filter({ onFilterSubmit }) {
+export default function Filter({onFilterSubmit}) {
     const handleFilterSubmit = (values) => {
-        console.log("Filter Values: ", values); // Replace with your filter logic
+        console.log("Filter Values: ", values); // API bağlantısı yapılacak
         onFilterSubmit(values);
     };
 
     return (
-        <Card title="Filtrele" style={{ borderRadius: "8px" }}>
+        <Card title="Filtrele" style={{borderRadius: "8px"}}>
             <Form layout="vertical" onFinish={handleFilterSubmit}>
                 {/* Price Range */}
                 <Form.Item label="Fiyat">
                     <Row gutter={8}>
                         <Col span={12}>
                             <Form.Item name="minPrice" noStyle>
-                                <Input placeholder="Min" type="number" />
+                                <Input placeholder="Min" type="number"/>
                             </Form.Item>
                         </Col>
                         <Col span={12}>
                             <Form.Item name="maxPrice" noStyle>
-                                <Input placeholder="Max" type="number" />
+                                <Input placeholder="Max" type="number"/>
                             </Form.Item>
                         </Col>
                     </Row>
@@ -52,43 +53,44 @@ export default function Filter({ onFilterSubmit }) {
                 </Form.Item>
 
                 {/* Preferences */}
-                <Form.Item label="Cinsiyet Tercihi" name="genderPreference">
-                    <Checkbox.Group>
-                        <Row>
-                            <Col span={8}><Checkbox value="male">Erkek</Checkbox></Col>
-                            <Col span={8}><Checkbox value="female">Kadın</Checkbox></Col>
-                            <Col span={8}><Checkbox value="none">Yok</Checkbox></Col>
-                        </Row>
-                    </Checkbox.Group>
-                </Form.Item>
+
+
+                <ThreeRadio
+                    label="Cinsiyet Tercihi"
+                    name="genderPreference"
+                    options={[
+                        {label: "Erkek", value: "male"},
+                        {label: "Kadın", value: "female"},
+                        {label: "Yok", value: "none"},
+                    ]}/>
 
                 {/* Additional Preferences */}
-                <Form.Item label="Eşyalı" name="furnished">
-                    <Checkbox.Group>
-                        <Row>
-                            <Col span={12}><Checkbox value="yes">Evet</Checkbox></Col>
-                            <Col span={12}><Checkbox value="no">Hayır</Checkbox></Col>
-                        </Row>
-                    </Checkbox.Group>
-                </Form.Item>
-                <Form.Item label="Evcil Hayvan" name="pets">
-                    <Checkbox.Group>
-                        <Row>
-                            <Col span={12}><Checkbox value="yes">Evet</Checkbox></Col>
-                            <Col span={12}><Checkbox value="no">Hayır</Checkbox></Col>
-                        </Row>
-                    </Checkbox.Group>
-                </Form.Item>
-                <Form.Item label="Sigara" name="smoking">
-                    <Checkbox.Group>
-                        <Row>
-                            <Col span={12}><Checkbox value="yes">Evet</Checkbox></Col>
-                            <Col span={12}><Checkbox value="no">Hayır</Checkbox></Col>
-                        </Row>
-                    </Checkbox.Group>
-                </Form.Item>
 
-                {/* Submit Button */}
+
+                <TwoRadio
+                    label="Eşyalı"
+                    name="furnished"
+                    options={[
+                        {label: "Evet", value: "yes"},
+                        {label: "Hayır", value: "no"},
+                    ]}/>
+                <TwoRadio
+                    label="Evcil Hayvan"
+                    name="pets"
+                    options={[
+                        {label: "Evet", value: "yes"},
+                        {label: "Hayır", value: "no"},
+                    ]}/>
+                <TwoRadio
+                    label="Sigara"
+                    name="smoking"
+                    options={[
+                        {label: "Evet", value: "yes"},
+                        {label: "Hayır", value: "no"},
+                    ]}/>
+
+                {/* Submit Button */
+                }
                 <Form.Item>
                     <Button type="primary" htmlType="submit" block>
                         Filtrele
@@ -96,5 +98,6 @@ export default function Filter({ onFilterSubmit }) {
                 </Form.Item>
             </Form>
         </Card>
-    );
+    )
+        ;
 }

@@ -38,3 +38,8 @@ a {
 .ant-layout-content {
     background: #fff;
 }
+
+/* Images */
+.ant-image-preview-operations {
+    display: none;
+}

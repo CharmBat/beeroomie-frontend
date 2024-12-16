@@ -107,17 +107,17 @@ export default function Advertisement() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <Row gutter={16}>
+            <Row gutter={16} justify="space-evenly">
                 {/* Filter */}
-                <Col xs={24} sm={8} md={6}>
+                <Col xs={24} sm={24} md={8} lg={6}>
                     <Filter onFilterSubmit={handleFilter} />
                 </Col>
-
+                {/*xs sm md lg xl*/}
                 {/* Advertisement */}
-                <Col xs={24} sm={16} md={18}>
+                <Col xs={24} sm={24} md={16} lg={18}>
                     <Row gutter={[16, 16]}>
                         {ads.map(ad => (
-                            <Col key={ad.id} xs={24} sm={12} md={8}>
+                            <Col key={ad.id} sm={24} md={12} lg={8}>
                                 <AdCard {...ad} />
                             </Col>
                         ))}
