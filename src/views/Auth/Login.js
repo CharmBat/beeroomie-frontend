@@ -1,16 +1,28 @@
-import { Button, Form, Input, Typography, Space } from 'antd';
+import {Button, Form, Input, Typography, Space, message} from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { login } from '../../endpoints';
 
 const { Title, Text } = Typography;
 
 export default function Login({ setIsLoggedIn }) {
     const navigate = useNavigate();
 
-    const onFinish = (values) => {
-        console.log('Success:', values); // DEĞİŞECEK
-        setIsLoggedIn(true);  // DEĞİŞECEK
-        navigate('/');
+    const onFinish = async (values) => {
+        try {
+            // Call login endpoint
+            const response = await login(values);
+            message.success('Giriş başarılı!');
+
+            // Store token in local storage
+            localStorage.setItem('authToken', response.token);
+
+            // Set login state and navigate to homepage
+            setIsLoggedIn(true);
+            navigate('/');
+        } catch (error) {
+            console.error('Login failed:', error);
+            message.error('Giriş başarısız. E-posta veya şifre hatalı.');
+        }
     };
 
     const onFinishFailed = (errorInfo) => {
