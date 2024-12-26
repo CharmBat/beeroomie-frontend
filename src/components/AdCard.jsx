@@ -1,8 +1,10 @@
 import { Card, Row, Col, Tag, Tooltip, Button } from 'antd';
+import { Link } from 'react-router-dom';
 import { EnvironmentOutlined, UserOutlined, StarOutlined, StarFilled, SwapOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 
 export default function AdCard({
+                                   id,
                                    title,
                                    user,
                                    location,
@@ -146,9 +148,9 @@ export default function AdCard({
                     </Tag>
                 </Col>
                 <Col>
-                    <a href="/" style={{ color: "#1890ff" }}>
-                        Detaylar
-                    </a>
+                    <Link to={`/advertisement/${id}`}>
+                        <Button type="primary">Detaylar</Button>
+                    </Link>
                 </Col>
             </Row>
         </Card>

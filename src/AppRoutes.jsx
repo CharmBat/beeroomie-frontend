@@ -13,6 +13,7 @@ import Profile from "./views/Profile/Profile";
 
 // Advertisement
 import Advertisement from "./views/Advertisement/Advertisement";
+import AdvertisementDetail from "./views/Advertisement/AdvertisementDetail";
 import Offer from "./views/Advertisement/Offer";
 import PublishAdvertisement from "./views/Advertisement/PublishAdvertisement";
 
@@ -40,6 +41,7 @@ function AppRoutes({isLoggedIn, setIsLoggedIn}) {
             {/*  Protected Routes  */}
             <Route path="/" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Advertisement/></ProtectedRoute>}/>
             <Route path="/advertisement" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Advertisement/></ProtectedRoute>}/>
+            <Route path="/advertisement/:adId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><AdvertisementDetail/></ProtectedRoute>}/>
             <Route path="/offer" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Offer/></ProtectedRoute>}/>
             <Route path="/publishAd" element={<ProtectedRoute isLoggedIn={isLoggedIn}><PublishAdvertisement/></ProtectedRoute>}/>
             <Route path="/profile" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Profile/></ProtectedRoute>}/>
