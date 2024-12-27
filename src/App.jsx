@@ -9,15 +9,17 @@ const { Header, Content } = Layout;
 
 function App() {
     const [isLoggedIn,setIsLoggedIn] = useState(false);
+    const userId = "1"; //bağlanıcak
+    const userRole = "Admin"; //bağlanıcak
 
     return (
         <Layout>
             <Router>
                 <Header>
-                    <AppHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                    <AppHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} userId={userId} userRole={userRole} />
                 </Header>
                 <Content>
-                    <AppRoutes isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                    <AppRoutes isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} userRole={userRole} />
                 </Content>
             </Router>
         </Layout>

@@ -5,7 +5,7 @@ import LogoText from "./LogoText";
 import UserText from "./UserText";
 
 
-export default function AppHeader({ isLoggedIn, setIsLoggedIn }) {
+export default function AppHeader({ isLoggedIn, setIsLoggedIn, userId, userRole }) {
     const location = useLocation();
     const [selectedKey, setSelectedKey] = useState("");
 
@@ -40,8 +40,9 @@ export default function AppHeader({ isLoggedIn, setIsLoggedIn }) {
                     </Menu>
                 </Flex>
                 <Flex justify={"flex-end"} align={"center"} gap={"15px"}>
+                    {userRole === "Admin" && <Button type="primary" style={{ background: "mediumpurple" }}><Link to={"/adminPanel"}>Admin Panel</Link></Button>}
                     <Button type="primary"><Link to={"/publishAd"}>İlan Ver</Link></Button>
-                    <UserText setIsLoggedIn={setIsLoggedIn} />
+                    <UserText setIsLoggedIn={setIsLoggedIn} userId={userId} />
                 </Flex>
             </Flex>
         </>

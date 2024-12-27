@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Image, Spin, Card, Descriptions, Button, Tag, Typography, Collapse } from 'antd';
+import ReportModal from '../../components/ReportModal';
 
 const { Title, Text } = Typography;
 const { Panel } = Collapse;
@@ -8,6 +9,7 @@ export default function AdDetail() {
     const [adData, setAdData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState('');
+    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
     useEffect(() => {
         // Bağlanacak API endpointi
@@ -53,9 +55,13 @@ export default function AdDetail() {
         );
     }
 
-    if (!adData || !adData.photos || adData.photos.length === 0) {
-        return <p style={{ textAlign: 'center' }}>No images available.</p>;
-    }
+    const openReportModal = () => {
+        setIsReportModalOpen(true);
+    };
+
+    const closeReportModal = () => {
+        setIsReportModalOpen(false);
+    };
 
     return (
         <div style={{ padding: '20px', minHeight: '100vh' }}>
@@ -184,13 +190,22 @@ export default function AdDetail() {
                             <Button type="default" block style={{ marginBottom: '10px' }}>
                                 Karşılaştır
                             </Button>
-                            <Button type="primary" block>
+                            <Button type="primary" block style={{ marginBottom: '10px' }}>
                                 Teklif Ver
+                            </Button>
+                            <Button danger block onClick={openReportModal}>
+                                Kullanıcıyı Raporla
                             </Button>
                         </Row>
                     </Card>
                 </Col>
             </Row>
+            <ReportModal
+                reportedUserId={adData.userId}
+                reportedUserName={adData.user}
+                isOpen={isReportModalOpen}
+                onClose={closeReportModal}
+            />
         </div>
     );
 }

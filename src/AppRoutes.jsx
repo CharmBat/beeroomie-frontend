@@ -10,6 +10,7 @@ import ResetPassword from "./views/Auth/ResetPassword";
 
 // Profile
 import Profile from "./views/Profile/Profile";
+import EditProfile from "./views/Profile/EditProfile";
 
 // Advertisement
 import Advertisement from "./views/Advertisement/Advertisement";
@@ -23,12 +24,14 @@ import Favorite from "./views/Action/Favorite";
 
 // Other
 import PageNotFound from "./views/PageNotFound";
+import AdminPanel from "./views/AdminPanel";
 
 // Route Guards
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
+import AdminRoute from "./routes/AdminRoute";
 
-function AppRoutes({isLoggedIn, setIsLoggedIn}) {
+function AppRoutes({isLoggedIn, setIsLoggedIn, userRole}) {
     return (
         <Routes>
             {/*  Public Routes  */}
@@ -44,10 +47,13 @@ function AppRoutes({isLoggedIn, setIsLoggedIn}) {
             <Route path="/advertisement/:adId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><AdvertisementDetail/></ProtectedRoute>}/>
             <Route path="/offer" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Offer/></ProtectedRoute>}/>
             <Route path="/publishAd" element={<ProtectedRoute isLoggedIn={isLoggedIn}><PublishAdvertisement/></ProtectedRoute>}/>
-            <Route path="/profile" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Profile/></ProtectedRoute>}/>
+            <Route path="/profile/:userId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Profile/></ProtectedRoute>}/>
+            <Route path="/edit-profile/:userId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><EditProfile/></ProtectedRoute>}/>
             <Route path="/compare" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Compare/></ProtectedRoute>}/>
             <Route path="/favorite" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Favorite/></ProtectedRoute>}/>
             {/*  404  */}
+            {/*  Admin  */}
+            <Route path="/adminPanel" element={<AdminRoute isLoggedIn={isLoggedIn} isAdmin={userRole === "Admin"}><AdminPanel/></AdminRoute>}/>
             <Route path="*" element={<PageNotFound/>}/>
         </Routes>
     );
