@@ -1,6 +1,6 @@
 import {Button, Form, Input, Typography, Space, message} from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../../endpoints';
+import { sendLoginRequest } from './api';
 
 const { Title, Text } = Typography;
 
@@ -10,18 +10,23 @@ export default function Login({ setIsLoggedIn }) {
     const onFinish = async (values) => {
         try {
             // Call login endpoint
-            const response = await login(values);
-            message.success('Giriş başarılı!');
+            const response = await sendLoginRequest(values);
+            if(response.error_status == 200){
+                message.success('Giriş başarılı!');
 
-            // Store token in local storage
-            localStorage.setItem('authToken', response.token);
+                // Store token in local storage
+                localStorage.setItem('authToken', response.token);
 
-            // Set login state and navigate to homepage
-            setIsLoggedIn(true);
-            navigate('/');
+                // Set login state and navigate to homepage
+                setIsLoggedIn(true);
+                navigate('/');
+            }
+            else{
+                message.error(response.system_message);
+            }
         } catch (error) {
             console.error('Login failed:', error);
-            message.error('Giriş başarısız. E-posta veya şifre hatalı.');
+            message.error('Sunucuya bağlanılamadı. Lütfen daha sonra tekrar deneyin.');
         }
     };
 
