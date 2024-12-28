@@ -40,7 +40,7 @@ function AppRoutes({isLoggedIn, setIsLoggedIn, userRole}) {
             <Route path="/register" element={<PublicRoute isLoggedIn={isLoggedIn}><Register/></PublicRoute>}/>
             <Route path="/forgot-password" element={<PublicRoute isLoggedIn={isLoggedIn}><ForgotPassword/></PublicRoute>}/>
             <Route path="/confirm-email/:token" element={<PublicRoute isLoggedIn={isLoggedIn}><ConfirmEmail/></PublicRoute>}/>
-            <Route path="/reset-password" element={<PublicRoute isLoggedIn={isLoggedIn}><ResetPassword/></PublicRoute>}/>
+            <Route path="/reset-password/:token" element={<PublicRoute isLoggedIn={isLoggedIn}><ResetPassword/></PublicRoute>}/>
             {/*  Protected Routes  */}
             <Route path="/" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Advertisement/></ProtectedRoute>}/>
             <Route path="/advertisement" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Advertisement/></ProtectedRoute>}/>

@@ -48,3 +48,13 @@ export const sendConfirmEmailRequest = async (token) => {
         throw error;
     }
 };
+
+export const sendResetPaswordRequest = async (token, password) => {
+    try {
+        const response = await axiosInstance.get(`/auth/change-password/${token}?new_password=${encodeURIComponent(password)}`);
+        return response.data;
+    }
+    catch (error) {
+        throw error;
+    }
+};
