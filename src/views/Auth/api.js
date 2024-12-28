@@ -15,12 +15,8 @@ export const sendLoginRequest = async (credentials) => {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         });
-        if (response.data.error_status !== 0) {
-            return response.data.system_message;
-        }
         return response.data;
     } catch (error) {
-        console.error("Login error:", error);
         throw error;
     }
 };

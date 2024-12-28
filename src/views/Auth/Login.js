@@ -11,7 +11,7 @@ export default function Login({ setIsLoggedIn }) {
         try {
             // Call login endpoint
             const response = await sendLoginRequest(values);
-            if(response.error_status == 200){
+            if(response.error_status === 200){
                 message.success('Giriş başarılı!');
 
                 // Store token in local storage
