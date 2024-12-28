@@ -1,13 +1,30 @@
-import { Button, Form, Input, Typography, Space } from 'antd';
-import { Link } from 'react-router-dom';
+import { Button, Form, Input, Typography, Space, message } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
+import { sendRegisterRequest } from './api';
 
 const { Title } = Typography;
 
 export default function Register() {
 
-    const onFinish = (values) => {
-        console.log('Success:', values); // Replace with registration logic
-    };
+    const navigate = useNavigate();
+
+    const onFinish = async (values) => {
+        try{
+            const { email, password } = values;
+            const response = await sendRegisterRequest({ email, password });
+            if(response.error_status === 201){
+                message.success('Kayıt başarılı! Lütfen mailinizi kontrol edin.');
+                navigate('/login');
+            }
+            else{
+                message.error(response.system_message);
+            }
+        }
+        catch(error){
+            console.error('Register failed:', error);
+            message.error('Sunucuya bağlanılamadı. Lütfen daha sonra tekrar deneyin.');
+        };
+}
 
     const onFinishFailed = (errorInfo) => {
         console.error('Failed:', errorInfo);
