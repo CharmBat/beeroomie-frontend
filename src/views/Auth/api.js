@@ -39,3 +39,12 @@ export const sendForgotPasswordRequest = async (email) => {
         throw error;
     }
 };
+
+export const sendConfirmEmailRequest = async (token) => {
+    try {
+        const response = await axiosInstance.get(`/auth/confirm/${token}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
