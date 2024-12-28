@@ -30,3 +30,12 @@ export const sendRegisterRequest = async (credentials) => {
         throw error;
     }
 };
+
+export const sendForgotPasswordRequest = async (email) => {
+    try {
+        const response = await axiosInstance.post(`/auth/forgot-password?email=${encodeURIComponent(email)}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
