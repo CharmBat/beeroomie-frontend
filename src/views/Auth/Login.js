@@ -15,7 +15,7 @@ export default function Login({ setIsLoggedIn }) {
                 message.success('Giriş başarılı!');
 
                 // Store token in local storage
-                localStorage.setItem('authToken', response.token);
+                localStorage.setItem('authToken', response.access_token);
 
                 // Set login state and navigate to homepage
                 setIsLoggedIn(true);
