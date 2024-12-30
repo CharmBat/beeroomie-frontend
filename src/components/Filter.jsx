@@ -16,12 +16,12 @@ export default function Filter({onFilterSubmit}) {
                 <Form.Item label="Fiyat">
                     <Row gutter={8}>
                         <Col span={12}>
-                            <Form.Item name="minPrice" noStyle>
+                            <Form.Item name="min_price" noStyle>
                                 <Input placeholder="Min" type="number"/>
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item name="maxPrice" noStyle>
+                            <Form.Item name="max_price" noStyle>
                                 <Input placeholder="Max" type="number"/>
                             </Form.Item>
                         </Col>
@@ -44,7 +44,7 @@ export default function Filter({onFilterSubmit}) {
                 </Form.Item>
 
                 {/* Room Count */}
-                <Form.Item label="Oda Sayısı" name="roomCount">
+                <Form.Item label="Oda Sayısı" name="number_of_rooms">
                     <Select placeholder="Lütfen seçin">
                         <Option value="1">1 Oda</Option>
                         <Option value="2">2 Oda</Option>
@@ -57,11 +57,11 @@ export default function Filter({onFilterSubmit}) {
 
                 <ThreeRadio
                     label="Cinsiyet Tercihi"
-                    name="genderPreference"
+                    name="gender_choices"
                     options={[
-                        {label: "Erkek", value: "male"},
-                        {label: "Kadın", value: "female"},
-                        {label: "Yok", value: "none"},
+                        {label: "Erkek", value: "0"},
+                        {label: "Kadın", value: "1"},
+                        {label: "Yok", value: "2"},
                     ]}/>
 
                 {/* Additional Preferences */}
@@ -71,22 +71,22 @@ export default function Filter({onFilterSubmit}) {
                     label="Eşyalı"
                     name="furnished"
                     options={[
-                        {label: "Evet", value: "yes"},
-                        {label: "Hayır", value: "no"},
+                        {label: "Evet", value: "true"},
+                        {label: "Hayır", value: "false"},
                     ]}/>
                 <TwoRadio
                     label="Evcil Hayvan"
                     name="pets"
                     options={[
-                        {label: "Evet", value: "yes"},
-                        {label: "Hayır", value: "no"},
+                        {label: "Evet", value: "true"},
+                        {label: "Hayır", value: "false"},
                     ]}/>
                 <TwoRadio
                     label="Sigara"
                     name="smoking"
                     options={[
-                        {label: "Evet", value: "yes"},
-                        {label: "Hayır", value: "no"},
+                        {label: "Evet", value: "true"},
+                        {label: "Hayır", value: "false"},
                     ]}/>
 
                 {/* Submit Button */

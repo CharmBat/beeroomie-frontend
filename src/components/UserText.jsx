@@ -1,13 +1,8 @@
 import { Dropdown } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-export default function UserText({ setIsLoggedIn, userId }) {
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        setIsLoggedIn(false); // Simulate logout
-        navigate('/login');
-    };
+export default function UserText({ handleLogout}) {
+    const userId = localStorage.getItem('userId');
 
     const items = [
         {

@@ -1,64 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import {Card, Avatar, Typography, Form, Input, Button, Divider, Row, Col, Badge, Upload, Spin} from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Card, Avatar, Typography, Form, Input, Button, Divider, Row, Col, Badge, Upload, Spin, message } from 'antd';
 import { UploadOutlined, ArrowLeftOutlined } from '@ant-design/icons';
-import { TwoRadio } from '../../components/FilterRadio'; // Import your custom Radio components
+import { TwoRadio } from '../../components/FilterRadio';
+import { getUserProfile, updateUserProfile } from './ProfileApi'; // Add updateUserProfile
 
 const { Title } = Typography;
 
 export default function EditProfile() {
-    const { userId } = useParams(); // Extract userId from URL
-    const navigate = useNavigate(); // For navigation
+    const navigate = useNavigate();
     const [form] = Form.useForm();
-    const [profileData, setProfileData] = useState(null);
-    const [avatar, setAvatar] = useState(process.env.PUBLIC_URL + "/blankAvatar.svg");
+    const [ppurl, setPpurl] = useState(process.env.PUBLIC_URL + "/blankAvatar.svg");
+    // const [profileData, setProfileData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const userId = localStorage.getItem('userId');
+    const userRole = localStorage.getItem('userRole');
 
     useEffect(() => {
-        // Simulated API call with mock data
-        const mockResponse = {
-            user_info_list: [
-                {
-                    full_name: "John Doe",
-                    date_of_birth: "1990-01-15",
-                    gender: true, // true for Male, false for Female
-                    smoking: true,
-                    pet: false,
-                    about: "A software developer specializing in front-end development and UI/UX design.",
-                    contact: "john.doe@example.com",
-                    rh: true,
-                    role: "Roomie", // Role: Roomie, Housie, Admin
-                },
-            ],
+        const fetchProfileData = async () => {
+            try {
+                const response = await getUserProfile(userId); // Fetch data from API
+                if (response?.user_info_list?.length > 0) {
+                    const userProfile = response.user_info_list[0];
+                    // setProfileData(userProfile);
+                    setPpurl(userProfile.ppurl || process.env.PUBLIC_URL + "/blankAvatar.svg");
+                    form.setFieldsValue(userProfile); // Set form fields with fetched data
+                } else {
+                    message.error('User profile not found!');
+                }
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+                message.error('Failed to load profile data.');
+            } finally {
+                setLoading(false);
+            }
         };
 
-        setTimeout(() => {
-            const userProfile = mockResponse.user_info_list[0];
-            setProfileData(userProfile);
-            form.setFieldsValue(userProfile); // Populate form with initial values
-        }, 1000);
+        fetchProfileData();
     }, [userId, form]);
 
-    const handleFormSubmit = (values) => {
-        console.log("Updated Profile Data:", { userId, ...values });
-        console.log("Avatar URL:", avatar);
+    const handleFormSubmit = async (values) => {
+        const updatedProfile = { ...values, ppurl }; // Include ppurl in the update
+        try {
+            await updateUserProfile(userId, updatedProfile); // Call the update API
+            message.success('Profile updated successfully!');
+            navigate(`/profile/${userId}`); // Navigate back to the profile page
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            message.error('Failed to update profile.');
+        }
     };
 
     const handleAvatarChange = (info) => {
-        if (info.file.status === 'done') {
-            setAvatar(URL.createObjectURL(info.file.originFileObj)); // Simulate successful upload
+        const file = info.file.originFileObj;
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setPpurl(imageUrl); // Set the new ppurl
         }
     };
 
-    const getBadgeColor = (role) => {
-        switch (role) {
-            case "Roomie": return "blue";
-            case "Housie": return "orange";
-            case "Admin": return "purple";
-            default: return "blue";
+    const getBadgeColor = (userRole) => {
+        switch (userRole) {
+            case "Roomie":
+                return "blue";
+            case "Housie":
+                return "orange";
+            case "Admin":
+                return "purple";
+            default:
+                return "blue";
         }
     };
 
-    if (!profileData) {
+
+    if (loading) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
                 <Spin size="large" />
@@ -70,12 +85,11 @@ export default function EditProfile() {
         <div style={{ padding: '20px', margin: 'auto' }}>
             <Card style={{ borderRadius: '12px', padding: '20px' }}>
                 <Row gutter={16}>
-                    {/* Left Section */}
                     <Col xs={24} md={12} style={{ textAlign: 'center' }}>
-                        <Badge.Ribbon text={profileData.role} color={getBadgeColor(profileData.role)}>
+                        <Badge.Ribbon text={userRole} color={getBadgeColor(userRole)}>
                             <Avatar
                                 size={120}
-                                src={avatar}
+                                src={ppurl}
                                 style={{
                                     marginBottom: '20px',
                                     border: '2px solid #1890ff',
@@ -83,7 +97,7 @@ export default function EditProfile() {
                             />
                         </Badge.Ribbon>
                         <Upload
-                            name="avatar"
+                            name="ppurl"
                             listType="picture"
                             showUploadList={false}
                             onChange={handleAvatarChange}
@@ -98,28 +112,24 @@ export default function EditProfile() {
                         </Form.Item>
                     </Col>
 
-                    {/* Right Section */}
                     <Col xs={24} md={12}>
-                        {/* Action Buttons */}
                         <Row justify="end" align="middle" style={{ marginBottom: '20px' }}>
                             <Button
                                 type="default"
                                 icon={<ArrowLeftOutlined />}
                                 style={{ marginRight: '10px' }}
-                                onClick={() => navigate(-1)} // Go back to the previous page
+                                onClick={() => navigate(-1)}
                             >
                                 Go Back
                             </Button>
                             <Button
                                 type="primary"
-                                htmlType="submit"
-                                onClick={() => form.submit()} // Trigger form submission
+                                onClick={() => form.submit()}
                             >
                                 Save Changes
                             </Button>
                         </Row>
-
-                        {/* Form Fields */}
+                        <Divider style={{ margin: '20px 0' }} />
                         <Form
                             form={form}
                             layout="vertical"
@@ -132,7 +142,6 @@ export default function EditProfile() {
                             >
                                 <Input placeholder="Enter your full name" />
                             </Form.Item>
-
                             <Form.Item
                                 label="Date of Birth"
                                 name="date_of_birth"
@@ -140,7 +149,6 @@ export default function EditProfile() {
                             >
                                 <Input type="date" />
                             </Form.Item>
-
                             <TwoRadio
                                 label="Gender"
                                 name="gender"
@@ -149,7 +157,6 @@ export default function EditProfile() {
                                     { label: 'Female', value: false },
                                 ]}
                             />
-
                             <TwoRadio
                                 label="Smoking"
                                 name="smoking"
@@ -158,7 +165,6 @@ export default function EditProfile() {
                                     { label: 'No', value: false },
                                 ]}
                             />
-
                             <TwoRadio
                                 label="Pet Ownership"
                                 name="pet"
@@ -167,16 +173,6 @@ export default function EditProfile() {
                                     { label: 'No', value: false },
                                 ]}
                             />
-
-                            <TwoRadio
-                                label="RH Status"
-                                name="rh"
-                                options={[
-                                    { label: 'Yes', value: true },
-                                    { label: 'No', value: false },
-                                ]}
-                            />
-
                             <Form.Item
                                 label="Contact"
                                 name="contact"
@@ -187,6 +183,16 @@ export default function EditProfile() {
                             >
                                 <Input placeholder="Enter your contact information" />
                             </Form.Item>
+                            {/*<Form.Item*/}
+                            {/*    label="Fakülte"*/}
+                            {/*    name="department_name"*/}
+                            {/*    rules={[*/}
+                            {/*        { required: true, message: 'Please enter your contact information!' },*/}
+                            {/*        { type: 'email', message: 'Please enter a valid email!' },*/}
+                            {/*    ]}*/}
+                            {/*>*/}
+                            {/*    <Input placeholder="Enter your contact information" />*/}
+                            {/*</Form.Item>*/}
                         </Form>
                     </Col>
                 </Row>

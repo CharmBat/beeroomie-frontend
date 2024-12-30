@@ -1,14 +1,25 @@
 import { Button, Form, Input, Typography, Space, message } from 'antd';
 import { Link } from 'react-router-dom';
+import { sendForgotPasswordRequest } from './AuthApi';
 
 const { Title } = Typography;
 
 export default function ForgotPassword() {
 
-    const onFinish = (values) => {
-        console.log('Email Sent to:', values.email);  // Replace with actual password reset logic
-        message.success("Şifre sıfırlama bağlantısı e-posta adresinize gönderildi!");
-    };
+    const onFinish = async (values) => {
+        try {
+            const response = await sendForgotPasswordRequest(values.email);
+            if (response.data.error_status === 200){
+                message.success("Şifre sıfırlama bağlantısı e-posta adresinize gönderildi!");
+            }
+            else{
+                message.error(response.data.system_message);
+            }
+        }
+        catch (error) {
+            message.error("Sunucuya bağlanılamadı. Lütfen daha sonra tekrar deneyin.");
+        }
+};
 
     const onFinishFailed = (errorInfo) => {
         console.error('Failed:', errorInfo);
