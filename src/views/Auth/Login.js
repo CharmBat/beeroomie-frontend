@@ -1,6 +1,6 @@
 import {Button, Form, Input, Typography, Space, message} from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import { sendLoginRequest } from './api';
+import { sendLoginRequest, userMe } from './AuthApi';
 
 const { Title, Text } = Typography;
 
@@ -16,6 +16,21 @@ export default function Login({ setIsLoggedIn }) {
 
                 // Store token in local storage
                 localStorage.setItem('authToken', response.access_token);
+
+                const userInfo = await userMe();
+                if (userInfo === null) {
+                    localStorage.setItem('userId', null);
+                    localStorage.setItem('userName', null);
+                    localStorage.setItem('userPic', null);
+                    localStorage.setItem('userRole', 'NewUser');
+                }
+                else {
+                    localStorage.setItem('userId', userInfo.user.userid);
+                    localStorage.setItem('userName', userInfo.user.full_name);
+                    localStorage.setItem('userPic', userInfo.user.ppurl);
+                    const role = userInfo.user.role ? "Admin" : userInfo.user.rh ? "Housie" : "Roomie";
+                    localStorage.setItem('userRole', role);
+                }
 
                 // Set login state and navigate to homepage
                 setIsLoggedIn(true);

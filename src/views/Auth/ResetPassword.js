@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom"
 import {Button, Form, Input, Typography, message} from 'antd';
-import { sendResetPaswordRequest } from "./api";
+import { sendResetPaswordRequest } from "./AuthApi";
 
 export default function ResetPassword() {
 

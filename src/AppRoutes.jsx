@@ -11,6 +11,7 @@ import ResetPassword from "./views/Auth/ResetPassword";
 // Profile
 import Profile from "./views/Profile/Profile";
 import EditProfile from "./views/Profile/EditProfile";
+import NewUser from "./views/Profile/NewUser";
 
 // Advertisement
 import Advertisement from "./views/Advertisement/Advertisement";
@@ -31,7 +32,8 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 import AdminRoute from "./routes/AdminRoute";
 
-function AppRoutes({isLoggedIn, setIsLoggedIn, userRole}) {
+function AppRoutes({isLoggedIn, setIsLoggedIn}) {
+    const userRole = localStorage.getItem("userRole");
     return (
         <Routes>
             {/*  Public Routes  */}
@@ -51,9 +53,10 @@ function AppRoutes({isLoggedIn, setIsLoggedIn, userRole}) {
             <Route path="/edit-profile/:userId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><EditProfile/></ProtectedRoute>}/>
             <Route path="/compare" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Compare/></ProtectedRoute>}/>
             <Route path="/favorite" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Favorite/></ProtectedRoute>}/>
-            {/*  404  */}
+            <Route path="/new-user" element={<ProtectedRoute isLoggedIn={isLoggedIn}><NewUser/></ProtectedRoute>} />
             {/*  Admin  */}
             <Route path="/adminPanel" element={<AdminRoute isLoggedIn={isLoggedIn} isAdmin={userRole === "Admin"}><AdminPanel/></AdminRoute>}/>
+            {/*  404  */}
             <Route path="*" element={<PageNotFound/>}/>
         </Routes>
     );

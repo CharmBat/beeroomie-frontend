@@ -1,6 +1,6 @@
 import { Button, Form, Input, Typography, Space, message } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import { sendRegisterRequest } from './api';
+import { sendRegisterRequest } from './AuthApi';
 
 const { Title } = Typography;
 
@@ -23,7 +23,7 @@ export default function Register() {
         catch(error){
             console.error('Register failed:', error);
             message.error('Sunucuya bağlanılamadı. Lütfen daha sonra tekrar deneyin.');
-        };
+        }
 }
 
     const onFinishFailed = (errorInfo) => {

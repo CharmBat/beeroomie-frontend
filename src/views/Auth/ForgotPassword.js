@@ -1,6 +1,6 @@
 import { Button, Form, Input, Typography, Space, message } from 'antd';
 import { Link } from 'react-router-dom';
-import { sendForgotPasswordRequest } from './api';
+import { sendForgotPasswordRequest } from './AuthApi';
 
 const { Title } = Typography;
 

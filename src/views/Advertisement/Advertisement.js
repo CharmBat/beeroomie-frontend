@@ -2,7 +2,7 @@ import { Row, Col, message } from 'antd';
 import AdCard from '../../components/AdCard';
 import Filter from '../../components/Filter';
 import { useEffect, useState } from 'react';
-import { filterAdvertisements, getAllAdvertisements } from './api';
+import { filterAdvertisements, getAllAdvertisements } from './AdApi';
 import { Pagination } from 'antd';
 
 export default function Advertisement() {

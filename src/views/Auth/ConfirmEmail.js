@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
-import { sendConfirmEmailRequest } from "./api";
+import { sendConfirmEmailRequest } from "./AuthApi";
 
 export default function ConfirmEmail() {
     const {token} = useParams();

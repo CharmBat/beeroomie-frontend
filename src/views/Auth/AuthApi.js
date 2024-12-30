@@ -1,5 +1,17 @@
 import axiosInstance from '../../axiosInstance';
 
+export const userMe = async () => {
+    try {
+        const response = await axiosInstance.get('/users/me');
+        if (response.data.error_status === 404) {
+            return null;
+        }
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const sendLoginRequest = async (credentials) => {
     try {
         const payload = new URLSearchParams({
@@ -55,6 +67,15 @@ export const sendResetPaswordRequest = async (token, password) => {
         return response.data;
     }
     catch (error) {
+        throw error;
+    }
+};
+
+export const sendLogoutRequest = async (token) => {
+    try {
+        const response = await axiosInstance.post(`/auth/logout/${token}`);
+        return response.data;
+    } catch (error) {
         throw error;
     }
 };
