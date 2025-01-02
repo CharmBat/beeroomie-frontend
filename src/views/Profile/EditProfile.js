@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card, Avatar, Typography, Form, Input, Button, Divider, Row, Col, Badge, Upload, Spin, message } from 'antd';
-import { UploadOutlined, ArrowLeftOutlined } from '@ant-design/icons';
-import { TwoRadio } from '../../components/FilterRadio';
-import { getUserProfile, updateUserProfile } from './ProfileApi'; // Add updateUserProfile
-
-const { Title } = Typography;
+import React, {useState, useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {Card, Avatar, Form, Input, Button, Divider, Row, Col, Badge, Upload, Spin, message, Select} from 'antd';
+import {UploadOutlined, ArrowLeftOutlined} from '@ant-design/icons';
+import {TwoRadio} from '../../components/FilterRadio';
+import {getUserProfile, updateUserProfile} from './ProfileApi';
+import {photoUpload} from "../MiscApi";
+import {departments} from '../../components/departments';
 
 export default function EditProfile() {
     const navigate = useNavigate();
     const [form] = Form.useForm();
     const [ppurl, setPpurl] = useState(process.env.PUBLIC_URL + "/blankAvatar.svg");
-    // const [profileData, setProfileData] = useState(null);
+    const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
     const userId = localStorage.getItem('userId');
     const userRole = localStorage.getItem('userRole');
@@ -22,15 +22,12 @@ export default function EditProfile() {
                 const response = await getUserProfile(userId); // Fetch data from API
                 if (response?.user_info_list?.length > 0) {
                     const userProfile = response.user_info_list[0];
-                    // setProfileData(userProfile);
+                    setProfileData(userProfile);
                     setPpurl(userProfile.ppurl || process.env.PUBLIC_URL + "/blankAvatar.svg");
-                    form.setFieldsValue(userProfile); // Set form fields with fetched data
-                } else {
-                    message.error('User profile not found!');
+                    form.setFieldsValue(userProfile);
                 }
             } catch (error) {
-                console.error('Error fetching profile data:', error);
-                message.error('Failed to load profile data.');
+                console.error(error);
             } finally {
                 setLoading(false);
             }
@@ -40,24 +37,39 @@ export default function EditProfile() {
     }, [userId, form]);
 
     const handleFormSubmit = async (values) => {
-        const updatedProfile = { ...values, ppurl }; // Include ppurl in the update
+        const updatedProfile = {...values, ppurl, userid_fk: userId, rh: profileData.rh};
         try {
-            await updateUserProfile(userId, updatedProfile); // Call the update API
-            message.success('Profile updated successfully!');
-            navigate(`/profile/${userId}`); // Navigate back to the profile page
+            await updateUserProfile(userId, updatedProfile);
+            message.success('Profilin başarıyla güncellendi!');
+            navigate(`/profile/${userId}`);
         } catch (error) {
-            console.error('Error updating profile:', error);
-            message.error('Failed to update profile.');
+            console.error('Güncelleme Başarısız:', error);
+            message.error('Güncelleme Başarısız. Lütfen tekrar deneyin.');
         }
     };
 
-    const handleAvatarChange = (info) => {
-        const file = info.file.originFileObj;
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setPpurl(imageUrl); // Set the new ppurl
+    const handleAvatarChange = async (info) => {
+        console.log("Info:", info);
+        const file = info.file;
+        console.log("File:", file);
+        if (!file) {
+            message.error("Lütfen bir dosya seçin.");
+            return;
+        }
+        try {
+            const response = await photoUpload(file);
+            if (response) {
+                setPpurl(response);
+                message.success("Fotoğraf başarıyla yüklendi!");
+            } else {
+                message.error("Fotoğraf yüklenemedi. Lütfen tekrar deneyin.");
+            }
+        } catch (error) {
+            console.error("Fotoğraf yüklenemedi:", error);
+            message.error("Fotoğraf yüklenemedi. Lütfen tekrar deneyin.");
         }
     };
+
 
     const getBadgeColor = (userRole) => {
         switch (userRole) {
@@ -75,17 +87,17 @@ export default function EditProfile() {
 
     if (loading) {
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-                <Spin size="large" />
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh'}}>
+                <Spin size="large"/>
             </div>
         );
     }
 
     return (
-        <div style={{ padding: '20px', margin: 'auto' }}>
-            <Card style={{ borderRadius: '12px', padding: '20px' }}>
+        <div style={{padding: '20px', margin: 'auto'}}>
+            <Card style={{borderRadius: '12px', padding: '20px'}}>
                 <Row gutter={16}>
-                    <Col xs={24} md={12} style={{ textAlign: 'center' }}>
+                    <Col xs={24} md={12} style={{textAlign: 'center'}}>
                         <Badge.Ribbon text={userRole} color={getBadgeColor(userRole)}>
                             <Avatar
                                 size={120}
@@ -101,98 +113,105 @@ export default function EditProfile() {
                             listType="picture"
                             showUploadList={false}
                             onChange={handleAvatarChange}
-                            beforeUpload={() => false} // Prevent automatic upload
+                            beforeUpload={() => false}
                         >
-                            <Button icon={<UploadOutlined />}>Change Photo</Button>
+                            <Button icon={<UploadOutlined/>}>Fotoğraf Değiştir</Button>
                         </Upload>
-                        <Divider />
-                        <Title level={4}>About Me</Title>
-                        <Form.Item name="about">
-                            <Input.TextArea rows={4} placeholder="Tell us about yourself" />
-                        </Form.Item>
                     </Col>
 
                     <Col xs={24} md={12}>
-                        <Row justify="end" align="middle" style={{ marginBottom: '20px' }}>
-                            <Button
-                                type="default"
-                                icon={<ArrowLeftOutlined />}
-                                style={{ marginRight: '10px' }}
-                                onClick={() => navigate(-1)}
-                            >
-                                Go Back
-                            </Button>
-                            <Button
-                                type="primary"
-                                onClick={() => form.submit()}
-                            >
-                                Save Changes
-                            </Button>
-                        </Row>
-                        <Divider style={{ margin: '20px 0' }} />
                         <Form
                             form={form}
                             layout="vertical"
                             onFinish={handleFormSubmit}
                         >
                             <Form.Item
-                                label="Full Name"
+                                label="İsmin"
                                 name="full_name"
-                                rules={[{ required: true, message: 'Please enter your full name!' }]}
+                                rules={[{required: true, message: 'İsmini Bilmeliyiz'}]}
                             >
-                                <Input placeholder="Enter your full name" />
+                                <Input placeholder=""/>
                             </Form.Item>
                             <Form.Item
-                                label="Date of Birth"
+                                label="Doğum Tarihin"
                                 name="date_of_birth"
-                                rules={[{ required: true, message: 'Please enter your date of birth!' }]}
+                                rules={[{required: true, message: 'Ne zaman doğdun?'}]}
                             >
-                                <Input type="date" />
+                                <Input type="date"/>
                             </Form.Item>
                             <TwoRadio
-                                label="Gender"
+                                label="Cinsiyetin"
                                 name="gender"
                                 options={[
-                                    { label: 'Male', value: true },
-                                    { label: 'Female', value: false },
+                                    {label: 'Erkek', value: true},
+                                    {label: 'Kadın', value: false},
                                 ]}
                             />
                             <TwoRadio
-                                label="Smoking"
+                                label="Sigara Kullanımı"
                                 name="smoking"
                                 options={[
-                                    { label: 'Yes', value: true },
-                                    { label: 'No', value: false },
+                                    {label: 'Evet', value: true},
+                                    {label: 'Hayır', value: false},
                                 ]}
                             />
                             <TwoRadio
-                                label="Pet Ownership"
+                                label="Evcil Hayvan"
                                 name="pet"
                                 options={[
-                                    { label: 'Yes', value: true },
-                                    { label: 'No', value: false },
+                                    {label: 'Evet', value: true},
+                                    {label: 'Hayır', value: false},
                                 ]}
                             />
                             <Form.Item
-                                label="Contact"
+                                label="İletişim Bilgilerin"
                                 name="contact"
                                 rules={[
-                                    { required: true, message: 'Please enter your contact information!' },
-                                    { type: 'email', message: 'Please enter a valid email!' },
+                                    {required: true, message: 'İletişim bilgilerini girmelisin!'},
                                 ]}
                             >
-                                <Input placeholder="Enter your contact information" />
+                                <Input placeholder=""/>
                             </Form.Item>
-                            {/*<Form.Item*/}
-                            {/*    label="Fakülte"*/}
-                            {/*    name="department_name"*/}
-                            {/*    rules={[*/}
-                            {/*        { required: true, message: 'Please enter your contact information!' },*/}
-                            {/*        { type: 'email', message: 'Please enter a valid email!' },*/}
-                            {/*    ]}*/}
-                            {/*>*/}
-                            {/*    <Input placeholder="Enter your contact information" />*/}
-                            {/*</Form.Item>*/}
+
+                            <Form.Item
+                                label="Fakülte"
+                                name="departmentid_fk"
+                                rules={[{ required: true, message: 'Lütfen bir fakülte seçin!' }]}
+                            >
+                                <Select
+                                    placeholder="Fakülte Seçiniz"
+                                    options={departments.map((dept) => ({
+                                        label: dept.department_name,
+                                        value: dept.department_id,
+                                    }))}
+                                />
+                            </Form.Item>
+
+                            <Form.Item
+                                label="Hakkımda"
+                                name="about"
+                                rules={[{ required: true, message: 'Hakkında bir şeyler yaz!' }]}
+                            >
+                                <Input.TextArea rows={4} placeholder=""/>
+                            </Form.Item>
+
+                            <Divider style={{margin: '20px 0'}}/>
+                            <Row justify="end" align="middle" style={{marginBottom: '20px'}}>
+                                <Button
+                                    type="default"
+                                    icon={<ArrowLeftOutlined/>}
+                                    style={{marginRight: '10px'}}
+                                    onClick={() => navigate(-1)}
+                                >
+                                    Geri Dön
+                                </Button>
+                                <Button
+                                    type="primary"
+                                    onClick={() => form.submit()}
+                                >
+                                    Kaydet
+                                </Button>
+                            </Row>
                         </Form>
                     </Col>
                 </Row>

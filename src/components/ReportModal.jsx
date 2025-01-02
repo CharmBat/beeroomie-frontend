@@ -1,26 +1,17 @@
 import React, { useState } from 'react';
 import { Modal, Input, Button } from 'antd';
+import {reportUser} from "../views/MiscApi";
 
 const { TextArea } = Input;
 
 export default function ReportModal({ reportedUserId, reportedUserName, isOpen, onClose }) {
     const [description, setDescription] = useState('');
 
-    const handleReport = () => {
-        console.log('Reported User ID:', reportedUserId);
-        console.log('Report Description:', description);
+    const handleReport = async () => {
+        const report = {reportedUserId, description};
+        console.log("Reporting:", report);
+        await reportUser(report);
         onClose();
-        // Add your API call here to submit the report
-        /*
-        fetch('/api/report', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reportedUserId, description }),
-        })
-            .then((response) => response.json())
-            .then((data) => console.log(data))
-            .catch((error) => console.error(error));
-        */
     };
 
     return (

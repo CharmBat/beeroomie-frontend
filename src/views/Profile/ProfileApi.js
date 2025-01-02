@@ -20,7 +20,7 @@ export const createUserProfile = async (userData) => {
 
 export const updateUserProfile = async (userId, profileData) => {
     try {
-        const response = await axiosInstance.put(`/userpageinfo/${userId}`, profileData);
+        const response = await axiosInstance.put(`/userpageinfo?userid=${userId}`, profileData);
         return response.data;
     } catch (error) {
         console.error("Error updating profile:", error);

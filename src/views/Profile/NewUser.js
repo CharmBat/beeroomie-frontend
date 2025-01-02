@@ -4,7 +4,7 @@ import { Card, Button, Form, Input, Row, Col, Badge, Avatar, Upload, message, Se
 import { UploadOutlined } from '@ant-design/icons';
 import { TwoRadio } from '../../components/FilterRadio';
 import { createUserProfile } from './ProfileApi';
-import departmans  from '../../components/departmans'; // Import the component
+import { departments }  from '../../components/departments';
 
 
 export default function NewUser() {
@@ -63,9 +63,9 @@ export default function NewUser() {
                             listType="picture"
                             showUploadList={false}
                             onChange={handleAvatarChange}
-                            beforeUpload={() => false} // Prevent automatic upload
+                            beforeUpload={() => false}
                         >
-                            <Button icon={<UploadOutlined />}>Upload Photo</Button>
+                            <Button icon={<UploadOutlined />}>Fotoğraf Yükle</Button>
                         </Upload>
                     </Col>
 
@@ -131,11 +131,10 @@ export default function NewUser() {
                             </Form.Item>
 
                             <Form.Item
-                                label="Mail Adresin"
+                                label="İletişim Bilgilerin"
                                 name="contact"
                                 rules={[
-                                    { required: true, message: 'Mail adresin?' },
-                                    { type: 'email', message: 'Mail adresi değil bu.' },
+                                    { required: true, message: 'Sana nasıl ulaşabiliriz?' },
                                 ]}
                             >
                                 <Input placeholder="@ olan" />
@@ -148,15 +147,14 @@ export default function NewUser() {
                             >
                                 <Select
                                     placeholder="Fakülte Seçiniz"
-                                    options={departmans.map((dept) => ({
+                                    options={departments.map((dept) => ({
                                         label: dept.department_name,
-                                        value: dept.department_name, // Use department_name as the value
+                                        value: dept.department_id,
                                     }))}
                                 />
                             </Form.Item>
 
 
-                            {/* Action Buttons */}
                             <Row justify="end">
                                 <Button
                                     type="primary"

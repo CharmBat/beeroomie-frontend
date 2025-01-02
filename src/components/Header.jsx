@@ -11,7 +11,6 @@ export default function AppHeader({ isLoggedIn, setIsLoggedIn }) {
     const location = useLocation();
     const [selectedKey, setSelectedKey] = useState("");
     const role = localStorage.getItem("userRole");
-    console.log("role", role);
 
     const handleLogout = async () => {
         const token = localStorage.getItem('authToken');
