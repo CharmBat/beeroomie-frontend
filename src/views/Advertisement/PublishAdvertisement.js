@@ -14,7 +14,7 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import { TwoRadio, ThreeRadio } from "../../components/FilterRadio"; // Adjust path if needed
 import TextArea from "antd/es/input/TextArea";
-import { getUtilities, uploadPhoto } from "./AdApi";
+import { getDistricts, getUtilities, uploadPhoto } from "./AdApi";
 
 const { Option } = Select;
 
@@ -27,6 +27,10 @@ export default function PublishAdvertisement() {
   const [utilites, setUtilities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedUtilities, setSelectedUtilities] = useState([]);
+
+  // ilçeler için
+  const [districts, setDistricts] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
 
   const handleChange = async ({ file, fileList: newFileList }) => {
     if (file.status === "uploading") {
@@ -66,6 +70,23 @@ export default function PublishAdvertisement() {
 
     fetchOptions();
   }, []);
+
+  useEffect(() => {
+    const fetchdistricts = async () => {
+      try {
+        const response = await getDistricts();
+        setDistricts(response.districts);
+      } catch (error) {
+        message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+      }
+    };
+
+    fetchdistricts();
+  }, []);
+
+  const handleDistrictChange = (value) => {
+    setSelectedDistrict(value);
+  }
 
   const handleUtilityChange = (value) => {
     setSelectedUtilities(value);
@@ -116,6 +137,20 @@ export default function PublishAdvertisement() {
             rules={[{ required: true, message: "Bu alan zorunludur!" }]}
           >
             <TextArea placeholder="İlanınız için bir açıklama giriniz." />
+          </Form.Item>
+          <Form.Item name="district" label="İlçe" rules={[{ required: true, message: "Bu alan zorunludur!" }]}>
+            <Select
+              style={{ width: "100%" }}
+              placeholder="İlçe seçiniz"
+              value={selectedDistrict}
+              onChange={handleDistrictChange}
+            >
+              {districts.map((option) => (
+                <Option key={option.districtid} value={option.districtid}>
+                  {option.district_name}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item
             name="address"
