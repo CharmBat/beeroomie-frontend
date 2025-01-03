@@ -12,8 +12,7 @@ export default function Login({ setIsLoggedIn }) {
             // Call login endpoint
             const response = await sendLoginRequest(values);
             if(response.error_status === 200){
-                message.success('Giriş başarılı!');
-
+                
                 // Store token in local storage
                 localStorage.setItem('authToken', response.access_token);
 
@@ -31,6 +30,7 @@ export default function Login({ setIsLoggedIn }) {
                     const role = userInfo.user.role ? "Admin" : userInfo.user.rh ? "Housie" : "Roomie";
                     localStorage.setItem('userRole', role);
                 }
+                message.success('Giriş başarılı!');
 
                 // Set login state and navigate to homepage
                 setIsLoggedIn(true);
