@@ -4,14 +4,14 @@ import Filter from '../../components/Filter';
 import { useEffect, useState } from 'react';
 import { filterAdvertisements, getAllAdvertisements } from './AdApi';
 import { Pagination } from 'antd';
+import {useCompare} from "../../hooks/useCompare";
+import {useFavorites} from "../../hooks/useFavorites";
 
 export default function Advertisement() {
     const [currentPage, setCurrentPage] = useState(1);
     const [ads, setAds] = useState([]);
-    const [compareAds, setCompareAds] = useState(() => {
-        return JSON.parse(localStorage.getItem('compareAds')) || [];
-    });
-    const distance = 0;
+    const { compareAds, handleCompareChange } = useCompare();
+    const { favorites, handleFavoriteChange } = useFavorites();
 
     useEffect(() => {
         const fetchAds = async () => {
@@ -49,24 +49,6 @@ export default function Advertisement() {
         setCurrentPage(page);
     };
 
-    const handleCompareChange = (adId) => {
-        setCompareAds((prevCompareAds) => {
-            let updatedAds;
-            if (prevCompareAds.includes(adId)) {
-                updatedAds = prevCompareAds.filter(id => id !== adId);
-            } else {
-                if (prevCompareAds.length >= 2) {
-                    updatedAds = [prevCompareAds[1], adId];
-                } else {
-                    updatedAds = [...prevCompareAds, adId];
-                }
-            }
-            localStorage.setItem('compareAds', JSON.stringify(updatedAds));
-            console.log("Updated compareAds:", updatedAds);
-            return updatedAds;
-        });
-    };
-
     return (
         <div style={{ padding: "20px" }}>
     <Row gutter={16} justify="space-evenly">
@@ -84,13 +66,14 @@ export default function Advertisement() {
                             id={ad.adpageid}
                             title={ad.title}
                             location={ad.address}
-                            distance={distance}
                             pets={ad.pet}
                             smoking={ad.smoking}
                             price={ad.price}
                             images={ad.photos}
                             isCompared={compareAds.includes(ad.adpageid)}
                             onCompareChange={handleCompareChange}
+                            isFavorited={favorites.includes(ad.adpageid)}
+                            onFavoriteChange={handleFavoriteChange}
                         />
                     </Col>
                 ))}

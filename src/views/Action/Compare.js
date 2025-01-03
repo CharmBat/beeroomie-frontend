@@ -52,7 +52,7 @@ export default function Compare() {
 
     if (adsToCompare.length === 0) {
         return (
-            <Empty style={{marginTop: "20px"}}
+            <Empty style={{marginTop: "40px"}}
                    image= {process.env.PUBLIC_URL + "/logo192.png"}
                    imageStyle={{height: 60}}
                    description={
