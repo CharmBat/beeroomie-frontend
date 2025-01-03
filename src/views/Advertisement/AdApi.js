@@ -61,3 +61,12 @@ export const getDistricts = async () => {
         throw error;
     }
 };
+
+export const getNeighborhoods = async (districtId) => {
+    try{
+        const response = await axiosInstance.get(`/advertisement/neighborhood/${districtId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

@@ -8,13 +8,12 @@ import {
   Col,
   InputNumber,
   message,
-  Select,
-  Spin,
+  Select
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { TwoRadio, ThreeRadio } from "../../components/FilterRadio"; // Adjust path if needed
 import TextArea from "antd/es/input/TextArea";
-import { getDistricts, getUtilities, uploadPhoto } from "./AdApi";
+import { getDistricts, getNeighborhoods, getUtilities, uploadPhoto } from "./AdApi";
 
 const { Option } = Select;
 
@@ -25,12 +24,15 @@ export default function PublishAdvertisement() {
 
   // utilities için
   const [utilites, setUtilities] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [selectedUtilities, setSelectedUtilities] = useState([]);
 
   // ilçeler için
   const [districts, setDistricts] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
+
+  // mahalleler için
+  const [neighborhoods, setNeighborhoods] = useState([]);
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState(null);
 
   const handleChange = async ({ file, fileList: newFileList }) => {
     if (file.status === "uploading") {
@@ -57,14 +59,11 @@ export default function PublishAdvertisement() {
 
   useEffect(() => {
     const fetchOptions = async () => {
-      setLoading(true);
       try {
         const response = await getUtilities();
         setUtilities(response.utilities);
       } catch (error) {
         message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -72,7 +71,7 @@ export default function PublishAdvertisement() {
   }, []);
 
   useEffect(() => {
-    const fetchdistricts = async () => {
+    const fetchDistricts = async () => {
       try {
         const response = await getDistricts();
         setDistricts(response.districts);
@@ -81,8 +80,26 @@ export default function PublishAdvertisement() {
       }
     };
 
-    fetchdistricts();
+    fetchDistricts();
   }, []);
+
+  useEffect(() => {
+    const fetchNeighborhoods = async () => {
+      if(selectedDistrict === null) return;
+      try {
+        const response = await getNeighborhoods(selectedDistrict);
+        setNeighborhoods(response.neighborhoods);
+      } catch (error) {
+        message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+      }
+    };
+
+    fetchNeighborhoods();
+  }, [selectedDistrict]);
+
+  const handleNeighborhoodChange = (value) => {
+    setSelectedNeighborhood(value);
+  }
 
   const handleDistrictChange = (value) => {
     setSelectedDistrict(value);
@@ -148,6 +165,20 @@ export default function PublishAdvertisement() {
               {districts.map((option) => (
                 <Option key={option.districtid} value={option.districtid}>
                   {option.district_name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item name="neighborhoodid_fk" label="Mahalle" rules={[{ required: true, message: "Bu alan zorunludur!" }]}>
+            <Select
+              style={{ width: "100%" }}
+              placeholder="Mahalle seçiniz"
+              value={selectedNeighborhood}
+              onChange={handleNeighborhoodChange}
+            >
+              {neighborhoods.map((option) => (
+                <Option key={option.neighborhoodid} value={option.neighborhoodid}>
+                  {option.neighborhood_name}
                 </Option>
               ))}
             </Select>
@@ -261,8 +292,6 @@ export default function PublishAdvertisement() {
               placeholder="Özellik ekle"
               value={selectedUtilities}
               onChange={handleUtilityChange}
-              loading={loading}
-              notFoundContent={loading ? <Spin size="small" /> : null}
             >
               {utilites.map((option) => (
                 <Option key={option.utilityid} value={option.utilityid}>
