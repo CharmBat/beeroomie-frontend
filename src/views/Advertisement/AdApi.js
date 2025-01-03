@@ -43,3 +43,12 @@ export const getUtilities = async () => {
         throw error;
     }
 };
+
+export const getAdById = async (id) => {
+    try {
+        const response = await axiosInstance.get(`/advertisement/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}

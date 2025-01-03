@@ -1,22 +1,15 @@
 import { Card, Row, Col, Tag, Tooltip, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { EnvironmentOutlined, UserOutlined, StarOutlined, StarFilled, SwapOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import {useState} from 'react';
 
-export default function AdCard({
-                                   id,
-                                   title,
-                                   user,
-                                   location,
-                                   distance,
-                                   pets,
-                                   smoking,
-                                   price,
-                                   images,
-                               }) {
-    const [selectedImage, setSelectedImage] = useState(images[0]); // Main image state
-    const [isFavorite, setIsFavorite] = useState(false); // Favorite state
-    const [isCompared, setIsCompared] = useState(false); // Compare state
+export default function AdCard({id, title, user, location, distance, pets, smoking, price, images, isCompared, onCompareChange}) {
+    const [selectedImage, setSelectedImage] = useState(images[0]);
+    const [isFavorite, setIsFavorite] = useState(false);
+
+    const handleCompareChange = () => {
+        onCompareChange(id);
+    }
 
     return (
         <Card
@@ -67,7 +60,7 @@ export default function AdCard({
                         <Button
                             shape="circle"
                             icon={<SwapOutlined />}
-                            onClick={() => setIsCompared(!isCompared)}
+                            onClick={handleCompareChange}
                             style={{
                                 backgroundColor: isCompared ? "#40a9ff" : "rgba(255, 255, 255, 0.9)",
                                 borderColor: isCompared ? "#40a9ff" : "#d9d9d9",

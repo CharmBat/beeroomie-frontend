@@ -8,7 +8,10 @@ import { Pagination } from 'antd';
 export default function Advertisement() {
     const [currentPage, setCurrentPage] = useState(1);
     const [ads, setAds] = useState([]);
-    const distance = 0; // Dummy attım aga ne olduğunu anlamadım
+    const [compareAds, setCompareAds] = useState(() => {
+        return JSON.parse(localStorage.getItem('compareAds')) || [];
+    });
+    const distance = 0;
 
     useEffect(() => {
         const fetchAds = async () => {
@@ -46,6 +49,24 @@ export default function Advertisement() {
         setCurrentPage(page);
     };
 
+    const handleCompareChange = (adId) => {
+        setCompareAds((prevCompareAds) => {
+            let updatedAds;
+            if (prevCompareAds.includes(adId)) {
+                updatedAds = prevCompareAds.filter(id => id !== adId);
+            } else {
+                if (prevCompareAds.length >= 2) {
+                    updatedAds = [prevCompareAds[1], adId];
+                } else {
+                    updatedAds = [...prevCompareAds, adId];
+                }
+            }
+            localStorage.setItem('compareAds', JSON.stringify(updatedAds));
+            console.log("Updated compareAds:", updatedAds);
+            return updatedAds;
+        });
+    };
+
     return (
         <div style={{ padding: "20px" }}>
     <Row gutter={16} justify="space-evenly">
@@ -68,6 +89,8 @@ export default function Advertisement() {
                             smoking={ad.smoking}
                             price={ad.price}
                             images={ad.photos}
+                            isCompared={compareAds.includes(ad.adpageid)}
+                            onCompareChange={handleCompareChange}
                         />
                     </Col>
                 ))}
