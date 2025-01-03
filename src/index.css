@@ -32,6 +32,24 @@ a {
     width: 400px;
 }
 
+.ant-menu-title-content a {
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+}
+
+.ant-menu-vertical{
+    border: none !important;
+}
+
+.ant-btn a {
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+}
+
 /* End Header */
 
 /* Content */
