@@ -1,15 +1,74 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Upload, Row, Col, InputNumber } from "antd";
+import React, { useState, useEffect } from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Upload,
+  Row,
+  Col,
+  InputNumber,
+  message,
+  Select,
+  Spin,
+} from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { TwoRadio, ThreeRadio } from "../../components/FilterRadio"; // Adjust path if needed
 import TextArea from "antd/es/input/TextArea";
+import { getUtilities, uploadPhoto } from "./AdApi";
+
+const { Option } = Select;
 
 export default function PublishAdvertisement() {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
 
-  const handleChange = ({ fileList: newFileList }) => {
+  // utilities için
+  const [utilites, setUtilities] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedUtilities, setSelectedUtilities] = useState([]);
+
+  const handleChange = async ({ file, fileList: newFileList }) => {
+    if (file.status === "uploading") {
+      try {
+        const data = await uploadPhoto(file);
+        if (data.url) {
+          setImageUrls([...imageUrls, data.url]);
+        } else {
+          message.error(`Dosya yüklenirken sorun oluştu.`);
+        }
+      } catch (error) {
+        message.error(`Dosya yüklenirken sorun oluştu.`);
+      }
+    }
     setFileList(newFileList);
+  };
+
+  const handleRemove = (file) => {
+    const newFileList = fileList.filter((item) => item.uid !== file.uid);
+    const newImageUrls = imageUrls.filter((url) => url !== file.url);
+    setFileList(newFileList);
+    setImageUrls(newImageUrls);
+  };
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      setLoading(true);
+      try {
+        const response = await getUtilities();
+        setUtilities(response.utilities);
+      } catch (error) {
+        message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOptions();
+  }, []);
+
+  const handleUtilityChange = (value) => {
+    setSelectedUtilities(value);
   };
 
   const uploadButton = (
@@ -21,8 +80,8 @@ export default function PublishAdvertisement() {
 
   const handleFormSubmit = (values) => {
     console.log("Form Values:", values);
-    console.log("Uploaded Images:", fileList);
-    // endpoint bağlanıcak
+    console.log("Uploaded Images URLs:", imageUrls);
+    // Send form values and imageUrls to your endpoint
   };
 
   return (
@@ -32,12 +91,11 @@ export default function PublishAdvertisement() {
         <Form form={form} layout="vertical" onFinish={handleFormSubmit}>
           <Form.Item name="photos" label="">
             <Upload
-              action="/upload" // Placeholder action for now
               listType="picture-card"
               fileList={fileList}
-              onChange={handleChange} // buraya before upload eklenecek form gönderilirken cdne gidicek şimdi hata veriyo
+              onChange={handleChange}
+              onRemove={handleRemove}
               showUploadList={{
-                // ayrıca form en az 1 resim olmadan gönderilemiyecek
                 showPreviewIcon: false,
               }}
             >
@@ -52,19 +110,19 @@ export default function PublishAdvertisement() {
           >
             <Input placeholder="İlanınıza bir başlık giriniz." />
           </Form.Item>
-            <Form.Item
+          <Form.Item
             name="description"
             label="Açıklama"
             rules={[{ required: true, message: "Bu alan zorunludur!" }]}
           >
-            <TextArea placeholder="İlanınız için bir açıklama giriniz."/>
+            <TextArea placeholder="İlanınız için bir açıklama giriniz." />
           </Form.Item>
           <Form.Item
             name="address"
             label="Ev Adresi"
             rules={[{ required: true, message: "Bu alan zorunludur!" }]}
           >
-            <TextArea placeholder="İlanınızın adresini giriniz."/>
+            <TextArea placeholder="İlanınızın adresini giriniz." />
           </Form.Item>
           <Row gutter={16}>
             <Col span={6}>
@@ -105,53 +163,79 @@ export default function PublishAdvertisement() {
             </Col>
           </Row>
 
-          <TwoRadio
-            label="İlan türünüz nedir?"
-            name="adtype"
-            options={[
-              { label: "Oda", value: "false" },
-              { label: "Ev", value: "true" },
-            ]}
-          />
+          <Form.Item>
+            <TwoRadio
+              label="İlan türünüz nedir?"
+              name="adtype"
+              options={[
+                { label: "Oda", value: "false" },
+                { label: "Ev", value: "true" },
+              ]}
+            />
+          </Form.Item>
 
-          {/* TwoRadio Component */}
-          <TwoRadio
-            label="Eşyalı mı?"
-            name="furnished"
-            options={[
-              { label: "Evet", value: "true" },
-              { label: "Hayır", value: "false" },
-            ]}
-          />
+          <Form.Item>
+            <TwoRadio
+              label="Eşyalı mı?"
+              name="furnished"
+              options={[
+                { label: "Evet", value: "true" },
+                { label: "Hayır", value: "false" },
+              ]}
+            />
+          </Form.Item>
 
-          <TwoRadio
-            label="Sigara kullanıyor musunuz?"
-            name="smoking"
-            options={[
-              { label: "Evet", value: "true" },
-              { label: "Hayır", value: "false" },
-            ]}
-          />
+          <Form.Item>
+            <TwoRadio
+              label="Sigara kullanıyor musunuz?"
+              name="smoking"
+              options={[
+                { label: "Evet", value: "true" },
+                { label: "Hayır", value: "false" },
+              ]}
+            />
+          </Form.Item>
 
-          <TwoRadio
-            label="Evde hayvan bulunmasına izin verir misiniz?"
-            name="pet"
-            options={[
-              { label: "Evet", value: "true" },
-              { label: "Hayır", value: "false" },
-            ]}
-          />
+          <Form.Item>
+            <TwoRadio
+              label="Evde hayvan bulunmasına izin verir misiniz?"
+              name="pet"
+              options={[
+                { label: "Evet", value: "true" },
+                { label: "Hayır", value: "false" },
+              ]}
+            />
+          </Form.Item>
 
-          {/* ThreeRadio Component */}
-          <ThreeRadio
-            label="Cinsiyet Tercihi"
-            name="genderPreference"
-            options={[
-              { label: "Erkek", value: "male" },
-              { label: "Kadın", value: "female" },
-              { label: "Farketmez", value: "none" },
-            ]}
-          />
+          <Form.Item>
+            <ThreeRadio
+              label="Cinsiyet Tercihi"
+              name="genderPreference"
+              options={[
+                { label: "Erkek", value: "male" },
+                { label: "Kadın", value: "female" },
+                { label: "Farketmez", value: "none" },
+              ]}
+            />
+          </Form.Item>
+
+          <Form.Item name="utilities" label="Özellikler">
+            <Select
+              mode="tags"
+              style={{ width: "100%" }}
+              placeholder="Özellik ekle"
+              value={selectedUtilities}
+              onChange={handleUtilityChange}
+              loading={loading}
+              notFoundContent={loading ? <Spin size="small" /> : null}
+            >
+              {utilites.map((option) => (
+                <Option key={option.utilityid} value={option.utilityid}>
+                  {option.utility_name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
 
           <Form.Item>
             <Button type="primary" htmlType="submit" block>

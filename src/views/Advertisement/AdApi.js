@@ -20,3 +20,26 @@ export const filterAdvertisements = async (filterValues, currentPage) => {
         throw error;
     }
 };
+
+export const uploadPhoto = async (file) => {
+    try{
+    const response = await axiosInstance.post('/upload-image/', {
+        method: 'POST',
+        body: file.originFileObj,
+      });
+      const data = await response.json();
+      return data;
+    }
+    catch(error){
+        throw error;
+    }
+};
+
+export const getUtilities = async () => {
+    try {
+        const response = await axiosInstance.get('/advertisement/utility');
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
