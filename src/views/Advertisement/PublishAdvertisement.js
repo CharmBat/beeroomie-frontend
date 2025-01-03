@@ -283,7 +283,7 @@ export default function PublishAdvertisement() {
             <Col span={5}>
               <Form.Item
                 name="m2"
-                label="Büyüklük(m2 cinsinden)"
+                label="Büyüklük(m² cinsinden)"
                 rules={[{ required: true, message: "Bu alan zorunludur!" }]}
               >
                 <InputNumber placeholder="Büyüklük" min={0} step={1} />

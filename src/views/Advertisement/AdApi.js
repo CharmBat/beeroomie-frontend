@@ -79,3 +79,12 @@ export const getN_rooms = async () => {
         throw error;
     }
 };
+
+export const getAdDetail = async (id) => {
+    try{
+        const response = await axiosInstance.get(`/advertisement/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
