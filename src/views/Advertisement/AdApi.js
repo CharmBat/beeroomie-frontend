@@ -52,3 +52,30 @@ export const getAdById = async (id) => {
         throw error;
     }
 }
+
+export const getDistricts = async () => {
+    try{
+        const response = await axiosInstance.get('/advertisement/district');
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getNeighborhoods = async (districtId) => {
+    try{
+        const response = await axiosInstance.get(`/advertisement/neighborhood/${districtId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getN_rooms = async () => {
+    try{
+        const response = await axiosInstance.get('/advertisement/rooms');
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
