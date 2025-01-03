@@ -70,3 +70,12 @@ export const getNeighborhoods = async (districtId) => {
         throw error;
     }
 };
+
+export const getN_rooms = async () => {
+    try{
+        const response = await axiosInstance.get('/advertisement/rooms');
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
