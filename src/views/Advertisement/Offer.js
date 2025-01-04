@@ -25,6 +25,7 @@ export default function OfferPage() {
   const handleWithdrawOffer = async (offerId) => {
     try{
       withdrawOffer(offerId);
+      message.success("Teklif başarıyla geri çekildi.");
     } catch (error) {
       message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
     }
