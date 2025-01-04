@@ -92,3 +92,12 @@ export const getOffers = async () => {
         throw error;
     }
 };
+
+export const withdrawOffer = async (offerId) => {
+    try{
+        const response = await axiosInstance.delete(`/offers/${offerId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

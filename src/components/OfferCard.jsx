@@ -1,10 +1,9 @@
 import React from 'react';
 import {Card, Row, Col, Avatar, Typography, Button} from 'antd';
-import { Link } from 'react-router-dom';
 
 const { Text, Title } = Typography;
 
-export default function OfferCard({ avatar, name, location, adId, description, isOfferByYou, contactDetails, onWithdrawOffer }) {
+export default function OfferCard({ ppurl, offerer_name, adId, send_message, isOfferByYou, contact_info, onWithdrawOffer }) {
     return (
         <Card
             style={{
@@ -17,15 +16,12 @@ export default function OfferCard({ avatar, name, location, adId, description, i
                 <Col style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <Avatar
                         size={64}
-                        src={avatar || process.env.PUBLIC_URL + "/blankAvatar.svg"}
+                        src={ppurl || process.env.PUBLIC_URL + "/blankAvatar.svg"}
                     />
                     <div>
                         <Title level={5} style={{ marginBottom: '4px' }}>
-                            {name}
+                            {offerer_name}
                         </Title>
-                        <Link to={`/advertisement/${adId}`} style={{ textDecoration: 'none', color: '#1890ff' }}>
-                            {location}
-                        </Link>
                     </div>
                 </Col>
 
@@ -38,13 +34,10 @@ export default function OfferCard({ avatar, name, location, adId, description, i
                         </>
                     ) : (
                         <div>
-                            {contactDetails && (
+                            {contact_info && (
                                 <>
                                     <Text style={{ display: 'block', fontSize: '0.85rem' }}>
-                                        <strong>Phone:</strong> {contactDetails.phone}
-                                    </Text>
-                                    <Text style={{ display: 'block', fontSize: '0.85rem' }}>
-                                        <strong>Email:</strong> {contactDetails.email}
+                                        <strong>İletişim:</strong> {contact_info}
                                     </Text>
                                 </>
                             )}
@@ -55,7 +48,7 @@ export default function OfferCard({ avatar, name, location, adId, description, i
 
             {/* Bottom: Description */}
             <div style={{ marginTop: '8px' }}>
-                <Text italic>{description}</Text>
+                <Text italic>{send_message}</Text>
             </div>
         </Card>
     );
