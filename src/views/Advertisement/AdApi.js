@@ -21,20 +21,6 @@ export const filterAdvertisements = async (filterValues, currentPage) => {
     }
 };
 
-export const uploadPhoto = async (file) => {
-    try{
-    const response = await axiosInstance.post('/upload-image/', {
-        method: 'POST',
-        body: file.originFileObj,
-      });
-      const data = await response.json();
-      return data;
-    }
-    catch(error){
-        throw error;
-    }
-};
-
 export const getUtilities = async () => {
     try {
         const response = await axiosInstance.get('/advertisement/utility');
@@ -89,6 +75,15 @@ export const getAdDetail = async (id) => {
     }
 };
 
+export const publishAd = async (adData) => {
+    try {
+        const response = await axiosInstance.post('/advertisement', adData);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getOffers = async () => {
     try{
         const response = await axiosInstance.get('/offers/');
@@ -96,4 +91,4 @@ export const getOffers = async () => {
     } catch (error) {
         throw error;
     }
-}
+};

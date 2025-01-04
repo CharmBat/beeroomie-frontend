@@ -17,13 +17,20 @@ import {
     getDistricts,
     getN_rooms,
     getNeighborhoods,
-    getUtilities,
+    getUtilities, publishAd,
 } from "./AdApi";
 import {photoUpload} from "../MiscApi";
+import {useNavigate} from "react-router-dom";
 
 const {Option} = Select;
 
 export default function PublishAdvertisement() {
+    const navigate = useNavigate();
+    const userId = localStorage.getItem("userId");
+    const userRole = localStorage.getItem("userRole");
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+    // Form için
     const [form] = Form.useForm();
     const [imageFiles, setImageFiles] = useState([]);
     const [imageUrls, setImageUrls] = useState([]);
@@ -120,9 +127,22 @@ export default function PublishAdvertisement() {
         </div>
     );
 
-    const handleFormSubmit = (values) => {
-        console.log("Form Values:", values);
-        console.log("Uploaded Images URLs:", imageUrls);
+    const handleFormSubmit = async (values) => {
+        const payload = {...values, photos: imageUrls, userid_fk: userId, adpageid: 0, ad_date: formattedDate};
+        try {
+            const response = await publishAd(payload);
+            if (response.error_code === 201) {
+                message.success("İlanınız başarıyla yayınlandı!");
+                if (userRole === "Roomie")
+                    localStorage.setItem("userRole", "Housie");
+                navigate("/");
+            } else {
+                message.error("İlanınız yayınlanamadı. Lütfen tekrar deneyin.");
+            }
+        } catch (error) {
+            console.error(error);
+            message.error("İlanınız yayınlanamadı. Lütfen tekrar deneyin.");
+        }
     };
 
     const handlePhotoUpload = async (info) => {
@@ -176,24 +196,24 @@ export default function PublishAdvertisement() {
                     <Form.Item
                         name="title"
                         label="Başlık"
-                        rules={[{required: true, message: "Bu alan zorunludur!"}]}
+                        rules={[{ required: true, message: "Bu alan zorunludur!" }]}
                     >
-                        <Input placeholder="İlanınıza bir başlık giriniz."/>
+                        <Input placeholder="İlanınıza bir başlık giriniz." />
                     </Form.Item>
                     <Form.Item
                         name="description"
                         label="Açıklama"
-                        rules={[{required: true, message: "Bu alan zorunludur!"}]}
+                        rules={[{ required: true, message: "Bu alan zorunludur!" }]}
                     >
-                        <TextArea placeholder="İlanınız için bir açıklama giriniz."/>
+                        <TextArea placeholder="İlanınız için bir açıklama giriniz." />
                     </Form.Item>
                     <Form.Item
                         name="district"
                         label="İlçe"
-                        rules={[{required: true, message: "Bu alan zorunludur!"}]}
+                        rules={[{ required: true, message: "Bu alan zorunludur!" }]}
                     >
                         <Select
-                            style={{width: "100%"}}
+                            style={{ width: "100%" }}
                             placeholder="İlçe seçiniz"
                             value={selectedDistrict}
                             onChange={handleDistrictChange}
@@ -208,10 +228,10 @@ export default function PublishAdvertisement() {
                     <Form.Item
                         name="neighborhoodid_fk"
                         label="Mahalle"
-                        rules={[{required: true, message: "Bu alan zorunludur!"}]}
+                        rules={[{ required: true, message: "Bu alan zorunludur!" }]}
                     >
                         <Select
-                            style={{width: "100%"}}
+                            style={{ width: "100%" }}
                             placeholder="Mahalle seçiniz"
                             value={selectedNeighborhood}
                             onChange={handleNeighborhoodChange}
@@ -229,122 +249,157 @@ export default function PublishAdvertisement() {
                     <Form.Item
                         name="address"
                         label="Ev Adresi"
-                        rules={[{required: true, message: "Bu alan zorunludur!"}]}
+                        rules={[{ required: true, message: "Bu alan zorunludur!" }]}
                     >
-                      {option.n_room}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
+                        <TextArea placeholder="İlanınızın adresini giriniz." />
+                    </Form.Item>
+                    <Row gutter={16}>
+                        <Col span={4}>
+                            <Form.Item
+                                name="price"
+                                label="Fiyatınız nedir?"
+                                rules={[{ required: true, message: "Bu alan zorunludur!" }]}
+                            >
+                                <InputNumber placeholder="Fiyatınız" min={0} step={1} />
+                            </Form.Item>
+                        </Col>
+                        <Col span={5}>
+                            <Form.Item
+                                name="n_roomid_fk"
+                                label="Oda Sayısı"
+                                rules={[{ required: true, message: "Bu alan zorunludur!" }]}
+                            >
+                                <Select
+                                    style={{ width: "60%" }}
+                                    placeholder="Oda Sayısı"
+                                    value={selectedN_roomid}
+                                    onChange={handleN_roomidChange}
+                                >
+                                    {n_roomid.map((option) => (
+                                        <Option
+                                            key={option.n_roomid}
+                                            value={option.n_roomid}
+                                        >
+                                            {option.n_room}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                        </Col>
 
-            <Col span={5}>
-              <Form.Item
-                name="n_floor"
-                label="Binanız kaç katlı?"
-                rules={[{ required: true, message: "Bu alan zorunludur!" }]}
-              >
-                <InputNumber placeholder="Kat" min={0} step={1} />
-              </Form.Item>
-            </Col>
-            <Col span={5}>
-              <Form.Item
-                name="floornumber"
-                label="Kaçıncı kattasınız?"
-                rules={[{ required: true, message: "Bu alan zorunludur!" }]}
-              >
-                <InputNumber placeholder="Kat" min={0} step={1} />
-              </Form.Item>
-            </Col>
-            <Col span={5}>
-              <Form.Item
-                name="m2"
-                label="Büyüklük(m² cinsinden)"
-                rules={[{ required: true, message: "Bu alan zorunludur!" }]}
-              >
-                <InputNumber placeholder="Büyüklük" min={0} step={1} />
-              </Form.Item>
-            </Col>
-          </Row>
+                        <Col span={5}>
+                            <Form.Item
+                                name="n_floor"
+                                label="Binanız kaç katlı?"
+                                rules={[{ required: true, message: "Bu alan zorunludur!" }]}
+                            >
+                                <InputNumber placeholder="Kat" min={0} step={1} />
+                            </Form.Item>
+                        </Col>
+                        <Col span={5}>
+                            <Form.Item
+                                name="floornumber"
+                                label="Kaçıncı kattasınız?"
+                                rules={[{ required: true, message: "Bu alan zorunludur!" }]}
+                            >
+                                <InputNumber placeholder="Kat" min={0} step={1} />
+                            </Form.Item>
+                        </Col>
+                        <Col span={5}>
+                            <Form.Item
+                                name="m2"
+                                label="Büyüklük(m² cinsinden)"
+                                rules={[{ required: true, message: "Bu alan zorunludur!" }]}
+                            >
+                                <InputNumber placeholder="Büyüklük" min={0} step={1} />
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
-          <Form.Item>
-            <TwoRadio
-              label="İlan türünüz nedir?"
-              name="adtype"
-              options={[
-                { label: "Oda", value: "false" },
-                { label: "Ev", value: "true" },
-              ]}
-            />
-          </Form.Item>
+                    <Form.Item>
+                        <TwoRadio
+                            label="İlan türünüz nedir?"
+                            name="adtype"
+                            options={[
+                                { label: "Oda", value: false },
+                                { label: "Ev", value: true },
+                            ]}
+                            rules={[{ required: true, message: 'İlan türünüz nedir?' }]}
+                        />
+                    </Form.Item>
 
-          <Form.Item>
-            <TwoRadio
-              label="Eşyalı mı?"
-              name="furnished"
-              options={[
-                { label: "Evet", value: "true" },
-                { label: "Hayır", value: "false" },
-              ]}
-            />
-          </Form.Item>
+                    <Form.Item>
+                        <TwoRadio
+                            label="Eşyalı mı?"
+                            name="furnished"
+                            options={[
+                                { label: "Evet", value: true },
+                                { label: "Hayır", value: false },
+                            ]}
+                            rules={[{ required: true, message: 'Eşyalı mı?' }]}
+                        />
+                    </Form.Item>
 
-          <Form.Item>
-            <TwoRadio
-              label="Sigara kullanıyor musunuz?"
-              name="smoking"
-              options={[
-                { label: "Evet", value: "true" },
-                { label: "Hayır", value: "false" },
-              ]}
-            />
-          </Form.Item>
+                    <Form.Item>
+                        <TwoRadio
+                            label="Sigara kullanıyor musunuz?"
+                            name="smoking"
+                            options={[
+                                { label: "Evet", value: true },
+                                { label: "Hayır", value: false },
+                            ]}
+                            rules={[{ required: true, message: 'Sigara kullanıyor musunuz?' }]}
+                        />
+                    </Form.Item>
 
-          <Form.Item>
-            <TwoRadio
-              label="Evde hayvan bulunmasına izin verir misiniz?"
-              name="pet"
-              options={[
-                { label: "Evet", value: "true" },
-                { label: "Hayır", value: "false" },
-              ]}
-            />
-          </Form.Item>
+                    <Form.Item>
+                        <TwoRadio
+                            label="Evde hayvan bulunmasına izin verir misiniz?"
+                            name="pet"
+                            options={[
+                                { label: "Evet", value: true },
+                                { label: "Hayır", value: false },
+                            ]}
+                            rules={[{ required: true, message: 'Evde hayvan bulunmasına izin verir misiniz?' }]}
+                        />
+                    </Form.Item>
 
-          <Form.Item>
-            <ThreeRadio
-              label="Cinsiyet Tercihi"
-              name="genderPreference"
-              options={[
-                { label: "Erkek", value: "male" },
-                { label: "Kadın", value: "female" },
-                { label: "Farketmez", value: "none" },
-              ]}
-            />
-          </Form.Item>
+                    <Form.Item>
+                        <ThreeRadio
+                            label="Cinsiyet Tercihi"
+                            name="gender_choices"
+                            options={[
+                                { label: "Erkek", value: 0 },
+                                { label: "Kadın", value: 1 },
+                                { label: "Farketmez", value: 2 },
+                            ]}
+                            rules={[{ required: true, message: 'Cinsiyet Tercihi' }]}
+                        />
+                    </Form.Item>
 
-          <Form.Item name="utilities" label="Özellikler">
-            <Select
-              mode="tags"
-              style={{ width: "100%" }}
-              placeholder="Özellik ekle"
-              value={selectedUtilities}
-              onChange={handleUtilityChange}
-            >
-              {utilites.map((option) => (
-                <Option key={option.utilityid} value={option.utilityid}>
-                  {option.utility_name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+                    <Form.Item name="utilites" label="Özellikler">
+                        <Select
+                            mode="tags"
+                            style={{ width: "100%" }}
+                            placeholder="Özellik ekle"
+                            value={selectedUtilities}
+                            onChange={handleUtilityChange}
+                        >
+                            {utilites.map((option) => (
+                                <Option key={option.utilityid} value={option.utilityid}>
+                                    {option.utility_name}
+                                </Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              Formu Gönder
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
-    </div>
-  );
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" block>
+                            İlanı Yayınla
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </div>
+        </div>
+    );
+}
