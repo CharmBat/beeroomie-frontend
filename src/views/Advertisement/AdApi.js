@@ -88,3 +88,12 @@ export const getAdDetail = async (id) => {
         throw error;
     }
 };
+
+export const getOffers = async () => {
+    try{
+        const response = await axiosInstance.get('/offers/');
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
