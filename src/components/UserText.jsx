@@ -1,8 +1,11 @@
-import {Button, Dropdown} from 'antd';
+import {Avatar, Button, Dropdown} from 'antd';
 import { Link } from 'react-router-dom';
+import React from "react";
 
 export default function UserText({ handleLogout, isMobile}) {
     const userId = localStorage.getItem('userId');
+    const userName = localStorage.getItem('userName');
+    const userPic = localStorage.getItem('userPic');
 
     const items = [
         {
@@ -31,12 +34,16 @@ export default function UserText({ handleLogout, isMobile}) {
                 </Button>
                 <Link to={`/profile/${userId}`} className="d-flex align-items-center gap-2 mt-4 justify-content-center border rounded p-2"
                       style={{cursor: "pointer"}}>
-                    <img
-                        alt="User Avatar"
-                        src={process.env.PUBLIC_URL + "/blankAvatar.svg"}
-                        style={{width: "60px", height: "60px"}}
+                    <Avatar
+                        size={120}
+                        src={userPic || process.env.PUBLIC_URL + "/blankAvatar.svg"}
+                        style={{
+                            width: '60px',
+                            height: '60px',
+                            border: '2px solid #1890ff',
+                        }}
                     />
-                    <div style={{color:"black", fontWeight:"600", fontSize:"14" }}>UserName</div>
+                    <div style={{color:"black", fontWeight:"600", fontSize:"14" }}>{userName}</div>
                 </Link>
             </>
         );
@@ -45,12 +52,16 @@ export default function UserText({ handleLogout, isMobile}) {
     return (
         <Dropdown menu={{items}}>
             <div className="d-flex align-items-center gap-2" style={{cursor: "pointer"}}>
-                <img
-                    alt="User Avatar"
-                    src={process.env.PUBLIC_URL + "/blankAvatar.svg"}
-                    style={{width: "40px", height: "40px"}}
+                <Avatar
+                    size={120}
+                    src={userPic || process.env.PUBLIC_URL + "/blankAvatar.svg"}
+                    style={{
+                        width: '50px',
+                        height: '50px',
+                        border: '2px solid #1890ff',
+                    }}
                 />
-                    <div>UserName</div>
+                    <div style={{fontWeight:"600", fontSize:"14"}}>{userName}</div>
                 </div>
         </Dropdown>
     );

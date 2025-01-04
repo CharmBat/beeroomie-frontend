@@ -27,3 +27,12 @@ export const updateUserProfile = async (userId, profileData) => {
         throw error;
     }
 };
+
+export const department = async () => {
+    try {
+        const response = await axiosInstance.get('/advertisement/department');
+        return response.data.departments;
+    } catch (error) {
+        throw error;
+    }
+}

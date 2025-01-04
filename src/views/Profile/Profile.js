@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Card, Avatar, Typography, Button, Descriptions, Divider, Row, Col, Badge, Spin, message} from 'antd';
 import {getUserProfile} from "./ProfileApi";
+import {useRoleColor} from "../../hooks/useRoleColor";
 
 const {Title, Text} = Typography;
 
@@ -12,6 +13,7 @@ export default function Profile() {
 
     const userRole = localStorage.getItem('userRole');
     const userId = localStorage.getItem('userId');
+    const roleColor = useRoleColor();
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -19,7 +21,6 @@ export default function Profile() {
                 const response = await getUserProfile(userId); // Fetch data from API
                 if (response?.user_info_list?.length > 0) {
                     setProfileData(response.user_info_list[0]);
-                    console.log(response)
                 } else {
                     message.error('Seni Bulamadık!');
                 }
@@ -34,19 +35,6 @@ export default function Profile() {
         fetchProfileData();
     }, [userId]);
 
-    const getBadgeColor = (userRole) => {
-        switch (userRole) {
-            case "Roomie":
-                return "blue";
-            case "Housie":
-                return "orange";
-            case "Admin":
-                return "purple";
-            default:
-                return "blue";
-        }
-    };
-
     if (loading) {
         return (
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh'}}>
@@ -60,10 +48,10 @@ export default function Profile() {
             <Card style={{borderRadius: '12px', padding: '20px'}}>
                 <Row gutter={16}>
                     <Col xs={24} md={12} style={{textAlign: 'center'}}>
-                        <Badge.Ribbon text={userRole} color={getBadgeColor(userRole)}>
+                        <Badge.Ribbon text={userRole} color={roleColor}>
                             <Avatar
                                 size={120}
-                                src={profileData.ppurl = "string" ? process.env.PUBLIC_URL + "/blankAvatar.svg" : (profileData.ppurl || process.env.PUBLIC_URL + "/blankAvatar.svg")}
+                                src={profileData.ppurl || process.env.PUBLIC_URL + "/blankAvatar.svg"}
                                 style={{
                                     marginBottom: '20px',
                                     border: '2px solid #1890ff',
@@ -82,10 +70,22 @@ export default function Profile() {
                             <Button
                                 type="primary"
                                 size="large"
-                                style={{borderRadius: '6px', width: '150px'}}
-                                onClick={() => navigate(`/edit-profile/${userId}`)} // Navigate with userId
+                                style={{borderRadius: '6px', width: '150px', marginRight: '20px',
+                                background: roleColor
+                            }}
+                                onClick={() => navigate(`/change-password/${userId}`)}
                             >
-                                Edit Profile
+                                Şifre Değiştir
+                            </Button>
+                            <Button
+                                type="primary"
+                                size="large"
+                                style={{borderRadius: '6px', width: '150px',
+                                background: roleColor
+                            }}
+                                onClick={() => navigate(`/edit-profile/${userId}`)}
+                            >
+                                Profilini Düzenle
                             </Button>
                         </Row>
                         <Divider style={{margin: '20px 0'}}/>

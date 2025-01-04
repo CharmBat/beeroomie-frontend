@@ -3,18 +3,20 @@ import {useNavigate} from 'react-router-dom';
 import {Card, Avatar, Form, Input, Button, Divider, Row, Col, Badge, Upload, Spin, message, Select} from 'antd';
 import {UploadOutlined, ArrowLeftOutlined} from '@ant-design/icons';
 import {TwoRadio} from '../../components/FilterRadio';
-import {getUserProfile, updateUserProfile} from './ProfileApi';
+import {getUserProfile, updateUserProfile, department} from './ProfileApi';
 import {photoUpload} from "../MiscApi";
-import {departments} from '../../components/departments';
+import {useRoleColor} from "../../hooks/useRoleColor";
 
 export default function EditProfile() {
     const navigate = useNavigate();
     const [form] = Form.useForm();
     const [ppurl, setPpurl] = useState(process.env.PUBLIC_URL + "/blankAvatar.svg");
     const [profileData, setProfileData] = useState(null);
+    const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(true);
     const userId = localStorage.getItem('userId');
     const userRole = localStorage.getItem('userRole');
+    const roleColor = useRoleColor();
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -24,15 +26,26 @@ export default function EditProfile() {
                     const userProfile = response.user_info_list[0];
                     setProfileData(userProfile);
                     setPpurl(userProfile.ppurl || process.env.PUBLIC_URL + "/blankAvatar.svg");
-                    form.setFieldsValue(userProfile);
+                    form.setFieldsValue({
+                        ...userProfile,
+                    });
                 }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        const fetchDepartments = async () => {
+            try {
+                const response = await department();
+                setDepartments(response);
             } catch (error) {
                 console.error(error);
             } finally {
                 setLoading(false);
             }
-        };
+        }
 
+        fetchDepartments()
         fetchProfileData();
     }, [userId, form]);
 
@@ -41,6 +54,8 @@ export default function EditProfile() {
         try {
             await updateUserProfile(userId, updatedProfile);
             message.success('Profilin başarıyla güncellendi!');
+            localStorage.setItem('userName', values.full_name);
+            localStorage.setItem('userPic', ppurl);
             navigate(`/profile/${userId}`);
         } catch (error) {
             console.error('Güncelleme Başarısız:', error);
@@ -49,9 +64,7 @@ export default function EditProfile() {
     };
 
     const handleAvatarChange = async (info) => {
-        console.log("Info:", info);
         const file = info.file;
-        console.log("File:", file);
         if (!file) {
             message.error("Lütfen bir dosya seçin.");
             return;
@@ -71,20 +84,6 @@ export default function EditProfile() {
     };
 
 
-    const getBadgeColor = (userRole) => {
-        switch (userRole) {
-            case "Roomie":
-                return "blue";
-            case "Housie":
-                return "orange";
-            case "Admin":
-                return "purple";
-            default:
-                return "blue";
-        }
-    };
-
-
     if (loading) {
         return (
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh'}}>
@@ -98,7 +97,7 @@ export default function EditProfile() {
             <Card style={{borderRadius: '12px', padding: '20px'}}>
                 <Row gutter={16}>
                     <Col xs={24} md={12} style={{textAlign: 'center'}}>
-                        <Badge.Ribbon text={userRole} color={getBadgeColor(userRole)}>
+                        <Badge.Ribbon text={userRole} color={roleColor}>
                             <Avatar
                                 size={120}
                                 src={ppurl}
@@ -182,10 +181,11 @@ export default function EditProfile() {
                                     placeholder="Fakülte Seçiniz"
                                     options={departments.map((dept) => ({
                                         label: dept.department_name,
-                                        value: dept.department_id,
+                                        value: dept.departmentid,
                                     }))}
                                 />
                             </Form.Item>
+
 
                             <Form.Item
                                 label="Hakkımda"
