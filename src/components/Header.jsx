@@ -13,6 +13,7 @@ export default function AppHeader({isLoggedIn, setIsLoggedIn}) {
     const [selectedKey, setSelectedKey] = useState("");
     const [isMobile, setIsMobile] = useState(false);
     const role = localStorage.getItem("userRole");
+    const userAd = localStorage.getItem("userAd");
     const [drawerVisible, setDrawerVisible] = useState(false);
 
     const handleLogout = async () => {
@@ -73,7 +74,7 @@ export default function AppHeader({isLoggedIn, setIsLoggedIn}) {
                 background: "orange",
                 width: isMobile ? "100%" : "auto",
                 marginTop: isMobile ? "24px" : "0"
-            }}><Link to={"/publishAd"}>İlanın</Link></Button>}
+            }}><Link to={`/advertisement/${userAd}`}>İlanın</Link></Button>}
             <UserText isMobile={isMobile} handleLogout={handleLogout}/>
         </>
     );

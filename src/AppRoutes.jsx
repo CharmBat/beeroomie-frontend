@@ -19,6 +19,7 @@ import Advertisement from "./views/Advertisement/Advertisement";
 import AdDetail from "./views/Advertisement/AdvertisementDetail";
 import Offer from "./views/Advertisement/Offer";
 import PublishAdvertisement from "./views/Advertisement/PublishAdvertisement";
+import EditAdvertisement from "./views/Advertisement/EditAdvertisement";
 
 // Action
 import Compare from "./views/Action/Compare";
@@ -48,6 +49,7 @@ function AppRoutes({isLoggedIn, setIsLoggedIn}) {
             <Route path="/" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Advertisement/></ProtectedRoute>}/>
             <Route path="/advertisement" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Advertisement/></ProtectedRoute>}/>
             <Route path="/advertisement/:adId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><AdDetail/></ProtectedRoute>}/>
+            <Route path="/edit-advertisement/:adId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><EditAdvertisement/></ProtectedRoute>}/>
             <Route path="/offer" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Offer/></ProtectedRoute>}/>
             <Route path="/publishAd" element={<ProtectedRoute isLoggedIn={isLoggedIn}><PublishAdvertisement/></ProtectedRoute>}/>
             <Route path="/profile/:userId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Profile/></ProtectedRoute>}/>
