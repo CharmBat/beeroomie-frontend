@@ -82,4 +82,13 @@ export const publishAd = async (adData) => {
     } catch (error) {
         throw error;
     }
-}
+};
+
+export const getOffers = async () => {
+    try{
+        const response = await axiosInstance.get('/offers/');
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
