@@ -84,7 +84,8 @@ export default function Filter({onFilterSubmit}) {
 
 
     const handleFilterSubmit = (values) => {
-        onFilterSubmit(values);
+        const filters = {...values, gender_choices: selectedGender || undefined,furnished: selectedFurnished || undefined,pet: selectedPets || undefined,smoking: selectedSmoking || undefined};
+        onFilterSubmit(filters);
     };
 
     return (
