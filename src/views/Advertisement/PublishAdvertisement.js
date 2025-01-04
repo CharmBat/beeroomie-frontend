@@ -231,150 +231,120 @@ export default function PublishAdvertisement() {
                         label="Ev Adresi"
                         rules={[{required: true, message: "Bu alan zorunludur!"}]}
                     >
-                        <TextArea placeholder="İlanınızın adresini giriniz."/>
-                    </Form.Item>
-                    <Row gutter={16}>
-                        <Col span={4}>
-                            <Form.Item
-                                name="price"
-                                label="Fiyatınız nedir?"
-                                rules={[{required: true, message: "Bu alan zorunludur!"}]}
-                            >
-                                <InputNumber placeholder="Fiyatınız" min={0} step={1}/>
-                            </Form.Item>
-                        </Col>
-                        <Col span={5}>
-                            <Form.Item
-                                name="n_roomid_fk"
-                                label="Oda Sayısı"
-                                rules={[{required: true, message: "Bu alan zorunludur!"}]}
-                            >
-                                <Select
-                                    style={{width: "60%"}}
-                                    placeholder="Oda Sayısı"
-                                    value={selectedN_roomid}
-                                    onChange={handleN_roomidChange}
-                                >
-                                    {n_roomid.map((option) => (
-                                        <Option
-                                            key={option.n_roomid}
-                                            value={option.n_roomid}
-                                        >
-                                            {option.n_room}
-                                        </Option>
-                                    ))}
-                                </Select>
-                            </Form.Item>
-                        </Col>
+                      {option.n_room}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
 
-                        <Col span={5}>
-                            <Form.Item
-                                name="n_floor"
-                                label="Binanız kaç katlı?"
-                                rules={[{required: true, message: "Bu alan zorunludur!"}]}
-                            >
-                                <InputNumber placeholder="Kat" min={0} step={1}/>
-                            </Form.Item>
-                        </Col>
-                        <Col span={5}>
-                            <Form.Item
-                                name="floornumber"
-                                label="Kaçıncı kattasınız?"
-                                rules={[{required: true, message: "Bu alan zorunludur!"}]}
-                            >
-                                <InputNumber placeholder="Kat" min={0} step={1}/>
-                            </Form.Item>
-                        </Col>
-                        <Col span={5}>
-                            <Form.Item
-                                name="m2"
-                                label="Büyüklük(m2 cinsinden)"
-                                rules={[{required: true, message: "Bu alan zorunludur!"}]}
-                            >
-                                <InputNumber placeholder="Büyüklük" min={0} step={1}/>
-                            </Form.Item>
-                        </Col>
-                    </Row>
+            <Col span={5}>
+              <Form.Item
+                name="n_floor"
+                label="Binanız kaç katlı?"
+                rules={[{ required: true, message: "Bu alan zorunludur!" }]}
+              >
+                <InputNumber placeholder="Kat" min={0} step={1} />
+              </Form.Item>
+            </Col>
+            <Col span={5}>
+              <Form.Item
+                name="floornumber"
+                label="Kaçıncı kattasınız?"
+                rules={[{ required: true, message: "Bu alan zorunludur!" }]}
+              >
+                <InputNumber placeholder="Kat" min={0} step={1} />
+              </Form.Item>
+            </Col>
+            <Col span={5}>
+              <Form.Item
+                name="m2"
+                label="Büyüklük(m² cinsinden)"
+                rules={[{ required: true, message: "Bu alan zorunludur!" }]}
+              >
+                <InputNumber placeholder="Büyüklük" min={0} step={1} />
+              </Form.Item>
+            </Col>
+          </Row>
 
-                    <Form.Item>
-                        <TwoRadio
-                            label="İlan türünüz nedir?"
-                            name="adtype"
-                            options={[
-                                {label: "Oda", value: "false"},
-                                {label: "Ev", value: "true"},
-                            ]}
-                        />
-                    </Form.Item>
+          <Form.Item>
+            <TwoRadio
+              label="İlan türünüz nedir?"
+              name="adtype"
+              options={[
+                { label: "Oda", value: "false" },
+                { label: "Ev", value: "true" },
+              ]}
+            />
+          </Form.Item>
 
-                    <Form.Item>
-                        <TwoRadio
-                            label="Eşyalı mı?"
-                            name="furnished"
-                            options={[
-                                {label: "Evet", value: "true"},
-                                {label: "Hayır", value: "false"},
-                            ]}
-                        />
-                    </Form.Item>
+          <Form.Item>
+            <TwoRadio
+              label="Eşyalı mı?"
+              name="furnished"
+              options={[
+                { label: "Evet", value: "true" },
+                { label: "Hayır", value: "false" },
+              ]}
+            />
+          </Form.Item>
 
-                    <Form.Item>
-                        <TwoRadio
-                            label="Sigara kullanıyor musunuz?"
-                            name="smoking"
-                            options={[
-                                {label: "Evet", value: "true"},
-                                {label: "Hayır", value: "false"},
-                            ]}
-                        />
-                    </Form.Item>
+          <Form.Item>
+            <TwoRadio
+              label="Sigara kullanıyor musunuz?"
+              name="smoking"
+              options={[
+                { label: "Evet", value: "true" },
+                { label: "Hayır", value: "false" },
+              ]}
+            />
+          </Form.Item>
 
-                    <Form.Item>
-                        <TwoRadio
-                            label="Evde hayvan bulunmasına izin verir misiniz?"
-                            name="pet"
-                            options={[
-                                {label: "Evet", value: "true"},
-                                {label: "Hayır", value: "false"},
-                            ]}
-                        />
-                    </Form.Item>
+          <Form.Item>
+            <TwoRadio
+              label="Evde hayvan bulunmasına izin verir misiniz?"
+              name="pet"
+              options={[
+                { label: "Evet", value: "true" },
+                { label: "Hayır", value: "false" },
+              ]}
+            />
+          </Form.Item>
 
-                    <Form.Item>
-                        <ThreeRadio
-                            label="Cinsiyet Tercihi"
-                            name="genderPreference"
-                            options={[
-                                {label: "Erkek", value: "male"},
-                                {label: "Kadın", value: "female"},
-                                {label: "Farketmez", value: "none"},
-                            ]}
-                        />
-                    </Form.Item>
+          <Form.Item>
+            <ThreeRadio
+              label="Cinsiyet Tercihi"
+              name="genderPreference"
+              options={[
+                { label: "Erkek", value: "male" },
+                { label: "Kadın", value: "female" },
+                { label: "Farketmez", value: "none" },
+              ]}
+            />
+          </Form.Item>
 
-                    <Form.Item name="utilities" label="Özellikler">
-                        <Select
-                            mode="tags"
-                            style={{width: "100%"}}
-                            placeholder="Özellik ekle"
-                            value={selectedUtilities}
-                            onChange={handleUtilityChange}
-                        >
-                            {utilites.map((option) => (
-                                <Option key={option.utilityid} value={option.utilityid}>
-                                    {option.utility_name}
-                                </Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
+          <Form.Item name="utilities" label="Özellikler">
+            <Select
+              mode="tags"
+              style={{ width: "100%" }}
+              placeholder="Özellik ekle"
+              value={selectedUtilities}
+              onChange={handleUtilityChange}
+            >
+              {utilites.map((option) => (
+                <Option key={option.utilityid} value={option.utilityid}>
+                  {option.utility_name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" block>
-                            Formu Gönder
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
-        </div>
-    );
-}
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block>
+              Formu Gönder
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    </div>
+  );
