@@ -64,6 +64,7 @@ export default function Advertisement() {
                     <Col key={ad.adpageid} sm={24} md={12} lg={8}>
                         <AdCard 
                             id={ad.adpageid}
+                            name={ad.full_name}
                             title={ad.title}
                             location={ad.address}
                             pets={ad.pet}
