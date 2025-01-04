@@ -1,126 +1,73 @@
-import { Row, Col, Empty } from 'antd';
+import {Row, Col, Empty, message, Spin} from 'antd';
 import AdCard from '../../components/AdCard';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
+import { getFavorites } from "../MiscApi";
+import {useCompare} from "../../hooks/useCompare";
+import {useFavorites} from "../../hooks/useFavorites";
 
 export default function Favorite() {
-    const [favorites, setFavorites] = useState([
-        {
-            id: 1,
-            title: "Kağıthanede Oda",
-            user: "John Doe",
-            location: "Kağıthane",
-            distance: "Sanayi Mahallesi 200m",
-            pets: true,
-            smoking: true,
-            price: 15000,
-            images: [
-                "https://via.placeholder.com/300x200",
-                "https://via.placeholder.com/300x200/ff0000",
-                "https://via.placeholder.com/300x200/00ff00",
-                "https://via.placeholder.com/300x200/0000ff",
-            ],
-        },
-        {
-            id: 2,
-            title: "Beşiktaşta Lüks Oda",
-            user: "Jane Doe",
-            location: "Beşiktaş",
-            distance: "Levent Mahallesi 500m",
-            pets: false,
-            smoking: false,
-            price: 20000,
-            images: [
-                "https://via.placeholder.com/300x200",
-                "https://via.placeholder.com/300x200/000000",
-                "https://via.placeholder.com/300x200/ffcc00",
-                "https://via.placeholder.com/300x200/00ccff",
-            ],
-        },
-        {
-            id: 3,
-            title: "Etilerde Geniş Daire",
-            user: "Alice Smith",
-            location: "Etiler",
-            distance: "Nispetiye Mahallesi 300m",
-            pets: true,
-            smoking: false,
-            price: 25000,
-            images: [
-                "https://via.placeholder.com/300x200/ff99cc",
-                "https://via.placeholder.com/300x200/660066",
-                "https://via.placeholder.com/300x200/ccff99",
-                "https://via.placeholder.com/300x200/3366cc",
-            ],
-        },
-        {
-            id: 4,
-            title: "Taksimde Merkezi Oda",
-            user: "Bob Brown",
-            location: "Taksim",
-            distance: "Cumhuriyet Mahallesi 100m",
-            pets: false,
-            smoking: true,
-            price: 18000,
-            images: [
-                "https://via.placeholder.com/300x200/ffcccc",
-                "https://via.placeholder.com/300x200/ccffcc",
-                "https://via.placeholder.com/300x200/ccccff",
-                "https://via.placeholder.com/300x200/ffcc99",
-            ],
-        },
-        {
-            id: 5,
-            title: "Kadıköyde Ferah Daire",
-            user: "Chris Johnson",
-            location: "Kadıköy",
-            distance: "Moda Mahallesi 600m",
-            pets: true,
-            smoking: false,
-            price: 22000,
-            images: [
-                "https://via.placeholder.com/300x200/6699ff",
-                "https://via.placeholder.com/300x200/ff99ff",
-                "https://via.placeholder.com/300x200/ffff66",
-                "https://via.placeholder.com/300x200/66ff99",
-            ],
-        },
-        {
-            id: 6,
-            title: "Üsküdarda Sessiz ve Sakin Oda",
-            user: "Emily Clark",
-            location: "Üsküdar",
-            distance: "Çengelköy Mahallesi 700m",
-            pets: false,
-            smoking: false,
-            price: 17000,
-            images: [
-                "https://via.placeholder.com/300x200/6633ff",
-                "https://via.placeholder.com/300x200/ff3366",
-                "https://via.placeholder.com/300x200/33cc99",
-                "https://via.placeholder.com/300x200/ff9933",
-            ],
-        },
-    ]);
+    const [ favoriteData, setFavoriteData ] = useState([]);
+    const { favorites, handleFavoriteChange } = useFavorites();
+    const { compareAds, handleCompareChange } = useCompare();
+    const [loading, setLoading] = useState(true);
 
-    const handleRemoveFavorite = (id) => {
-        setFavorites(favorites.filter((ad) => ad.id !== id)); // favorite api bağlanıcak
-    };
+
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            setLoading(true);
+            try {
+                const response = await getFavorites();
+                setFavoriteData(response || []);
+            } catch (error) {
+                console.error("Hata:", error);
+                message.error("Favoriler alınırken bir hata oluştu.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchFavorites();
+    }, []);
+
+    if (loading) {
+        return (
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh"}}>
+                <Spin size="large"/>
+            </div>
+        );
+    }
 
     return (
-        <div style={{ padding: "20px" }}>
-            {favorites.length > 0 ? (
+        <div style={{padding: "20px"}}>
+            {favoriteData.length > 0 ? (
                 <Row gutter={[16, 16]}>
-                    {favorites.map((ad) => (
+                    {favoriteData.map((ad) => (
                         <Col key={ad.id} xs={24} sm={12} md={8} lg={6}>
                             <AdCard
-                                {...ad}
-                                onRemoveFavorite={() => handleRemoveFavorite(ad.id)}
+                                id={ad.adpageid}
+                                title={ad.title}
+                                location={ad.address}
+                                pets={ad.pet}
+                                smoking={ad.smoking}
+                                price={ad.price}
+                                images={ad.photos}
+                                isCompared={compareAds.includes(ad.adpageid)}
+                                onCompareChange={handleCompareChange}
+                                isFavorited={favorites.includes(ad.adpageid)}
+                                onFavoriteChange={handleFavoriteChange}
                             />
                         </Col>
                     ))}
                 </Row>
             ) : (
-                <Empty description="Henüz favori ilanınız yok." style={{ marginTop: "50px" }} />
+                <Empty style={{marginTop: "20px"}}
+                       image= {process.env.PUBLIC_URL + "/logo192.png"}
+                       imageStyle={{height: 60}}
+                       description={
+                           <span>
+                        Henüz bir favorin yok. <b>İlanlar</b> sayfasından favori ilanlarını seçebilirsin.
+                    </span>
+                       }
+                />
             )}
         </div>
     );

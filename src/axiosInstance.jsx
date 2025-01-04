@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create Axios Instance
 const axiosInstance = axios.create({
-    baseURL: process.env.REACT_APP_API_URL || "http://127.0.0.1:8000",
+    baseURL: process.env.REACT_APP_API_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -28,4 +28,5 @@ axiosInstance.interceptors.request.use(
 //     }
 // );
 
+console.log("API URL:", process.env.REACT_APP_API_URL);
 export default axiosInstance;

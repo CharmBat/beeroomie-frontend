@@ -57,3 +57,44 @@ export const reportUser = async (report) => {
         throw error;
     }
 }
+
+export const getFavorites = async () => {
+    try {
+        const response = await axiosInstance.get('/favorites');
+        return response.data.advertisement_list;
+    } catch (error) {
+        console.error("Hata:", error);
+        throw error;
+    }
+}
+
+export const getFavoriteIds = async () => {
+    try {
+        const response = await axiosInstance.get('/favorites');
+        return response.data.advertisement_list.map(ad => ad.adpageid);
+    } catch (error) {
+        console.error("Hata:", error);
+        throw error;
+    }
+}
+
+export const addFavorite = async (adId) => {
+    try {
+        const response = await axiosInstance.post(`/favorites?adpage_id=${adId}`);
+        return response.data;
+    } catch (error) {
+        console.error("Hata:", error);
+        throw error;
+    }
+}
+
+export const removeFavorite = async (adId) => {
+    try {
+        const response = await axiosInstance.delete(`/favorites?adpage_id=${adId}`);
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        console.error("Hata:", error);
+        throw error;
+    }
+}

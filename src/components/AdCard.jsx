@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom';
 import { EnvironmentOutlined, UserOutlined, StarOutlined, StarFilled, SwapOutlined } from '@ant-design/icons';
 import {useState} from 'react';
 
-export default function AdCard({id, title, user, location, distance, pets, smoking, price, images, isCompared, onCompareChange}) {
+export default function AdCard({id, title, user, location, pets, smoking, price, images, isCompared, onCompareChange, isFavorited, onFavoriteChange}) {
     const [selectedImage, setSelectedImage] = useState(images[0]);
-    const [isFavorite, setIsFavorite] = useState(false);
 
     const handleCompareChange = () => {
         onCompareChange(id);
+    }
+
+    const handleFavoriteChange = () => {
+        onFavoriteChange(id);
     }
 
     return (
@@ -44,14 +47,14 @@ export default function AdCard({id, title, user, location, distance, pets, smoki
                     gap: "10px",
                 }}>
                     {/* Favorite Button */}
-                    <Tooltip title={isFavorite ? "Favorilerden Kaldır" : "Favorilere Ekle"}>
+                    <Tooltip title={isFavorited ? "Favorilerden Kaldır" : "Favorilere Ekle"}>
                         <Button
                             shape="circle"
-                            icon={isFavorite ? <StarFilled style={{ color: "#fadb14" }} /> : <StarOutlined />}
-                            onClick={() => setIsFavorite(!isFavorite)}
+                            icon={isFavorited ? <StarFilled style={{ color: "#fadb14" }} /> : <StarOutlined />}
+                            onClick={handleFavoriteChange}
                             style={{
-                                backgroundColor: isFavorite ? "#fff" : "rgba(255, 255, 255, 0.9)",
-                                borderColor: isFavorite ? "#fadb14" : "#d9d9d9",
+                                backgroundColor: isFavorited ? "#fff" : "rgba(255, 255, 255, 0.9)",
+                                borderColor: isFavorited ? "#fadb14" : "#d9d9d9",
                             }}
                         />
                     </Tooltip>
@@ -124,9 +127,9 @@ export default function AdCard({id, title, user, location, distance, pets, smoki
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                 }}
-                title={`${location}, ${distance}`}
+                title={`${location}`}
             >
-                <EnvironmentOutlined /> {location}, {distance}
+                <EnvironmentOutlined /> {location}
             </p>
             <p style={{ color: "#888", margin: "5px 0" }}>
                 🐾 {pets ? "Evcil Hayvan" : "Evcil Hayvan Yok"}

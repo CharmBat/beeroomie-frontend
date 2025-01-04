@@ -2,7 +2,7 @@ import {Button, Form, Input, Typography, Space, message} from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { sendLoginRequest, userMe } from './AuthApi';
 
-const { Title, Text } = Typography;
+const { Title} = Typography;
 
 export default function Login({ setIsLoggedIn }) {
     const navigate = useNavigate();
@@ -47,10 +47,6 @@ export default function Login({ setIsLoggedIn }) {
 
     const onFinishFailed = (errorInfo) => {
         console.error('Failed:', errorInfo);
-    };
-
-    const handleGuestLogin = () => {
-        setIsLoggedIn(true);  // DEĞİŞECEK
     };
 
     return (
@@ -105,14 +101,6 @@ export default function Login({ setIsLoggedIn }) {
                 </Link>
             </Space>
 
-            <div style={{ marginTop: "30px" }}> {/* DEĞİŞECEK */}
-                <Button type="dashed" block onClick={handleGuestLogin}>
-                    Şifresiz Giriş
-                </Button>
-                <Text type="secondary" style={{ marginTop: "5px", display: "block" }}>
-                    Geçici olarak siteye erişim için "Şifresiz Giriş" butonunu kullanabilirsiniz.
-                </Text>
-            </div>
         </div>
     );
 }

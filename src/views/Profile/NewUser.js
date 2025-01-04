@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Button, Form, Input, Row, Col, Badge, Avatar, Upload, message, Select } from 'antd';
+import {Card, Button, Form, Input, Row, Col, Badge, Avatar, Upload, message, Select, Spin} from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { TwoRadio } from '../../components/FilterRadio';
-import { createUserProfile } from './ProfileApi';
-import { departments }  from '../../components/departments';
-
+import {createUserProfile, department} from './ProfileApi';
 
 export default function NewUser() {
     const navigate = useNavigate();
     const [form] = Form.useForm();
     const [ppurl, setppurl] = useState(process.env.PUBLIC_URL + "/blankAvatar.svg");
+    const [departments, setDepartments] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                const response = await department();
+                setDepartments(response);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchDepartments()
+    }, []);
 
     const handleFormSubmit = async (values) => {
         const userData = { ...values, ppurl };
@@ -40,7 +55,13 @@ export default function NewUser() {
         }
     };
 
-
+    if (loading) {
+        return (
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh'}}>
+                <Spin size="large"/>
+            </div>
+        );
+    }
 
     return (
         <div style={{ padding: '20px', margin: 'auto' }}>
@@ -149,7 +170,7 @@ export default function NewUser() {
                                     placeholder="Fakülte Seçiniz"
                                     options={departments.map((dept) => ({
                                         label: dept.department_name,
-                                        value: dept.department_id,
+                                        value: dept.departmentid,
                                     }))}
                                 />
                             </Form.Item>
