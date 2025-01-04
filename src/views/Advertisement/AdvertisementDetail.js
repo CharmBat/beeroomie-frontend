@@ -225,9 +225,6 @@ export default function AdDetail() {
               </Descriptions>
             </div>
             <Row justify="space-between" style={{ marginTop: "20px" }}>
-              <Button type="default" block style={{ marginBottom: "10px" }}>
-                Karşılaştır
-              </Button>
               <Button type="primary" block style={{ marginBottom: "10px" }}>
                 Teklif Ver
               </Button>
