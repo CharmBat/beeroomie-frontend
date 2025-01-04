@@ -29,9 +29,10 @@ export default function NewUser() {
 
     const handleFormSubmit = async (values) => {
         const userData = { ...values, ppurl };
-        console.log("Submitting data:", userData);
+        const userDataWithRh = { ...userData, rh: false };
+        console.log("Submitting data:", userDataWithRh);
         try {
-            await createUserProfile(userData);
+            await createUserProfile(userDataWithRh);
             message.success('Bilgilerini Başarıyla Aldık!');
             navigate('/');
         } catch (error) {
