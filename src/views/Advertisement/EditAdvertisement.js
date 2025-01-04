@@ -103,7 +103,7 @@ console.log(n_roomid);
         fetchAdvertisementDetails();
         fetchInitialData();
         form.setFieldsValue(adDetails);
-    }, [adId, form, initialDistrict]);
+    }, [adId, form, initialDistrict, adDetails]);
 
 
 
