@@ -23,7 +23,9 @@ const { Panel } = Collapse;
 export default function AdDetail() {
   const { adId } = useParams();
   const userAd = localStorage.getItem("userAd");
-  const userPic = localStorage.getItem("userPic");
+  const userRole = localStorage.getItem("userRole");
+  const isRoomie = userRole === "Roomie";
+  const isAdmin = userRole === "Admin";
   const isUserAd = userAd === adId;
   const [adData, setAdData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -173,8 +175,8 @@ export default function AdDetail() {
             <Panel header="Açıklama" key="1">
               <Text>{adData.description}</Text>
             </Panel>
-            <Panel header="Adres Tarifi" key="2">
-              <Text>{`${adData.address}, ${adData.neighborhood}, ${adData.district}`}</Text>
+            <Panel header="Özellikler" key="2">
+                <Text> {adData.utilities.join(", ") || "Yok"} </Text>
             </Panel>
           </Collapse>
         </Col>
@@ -193,24 +195,28 @@ export default function AdDetail() {
           >
             <div>
               <Row align="middle" gutter={16} style={{ marginBottom: "20px"}}>
-                <Col>
-                  <img
-                    alt="User Avatar"
-                    src={userPic || process.env.PUBLIC_URL + "/blankAvatar.svg"}
-                    style={{
-                      width: "60px",
-                      height: "60px",
-                      fontSize: "48px",
-                      borderRadius: "50%",
-                      background: "#f0f0f0",
-                    }}
-                  />
-                </Col>
-                <Col>
-                  <Text strong>{adData.user_full_name}</Text>
-                </Col>
+                  <Link to={`/profile/${adData.userid_fk}`}
+                        className="d-flex align-items-center gap-2 justify-content-center">
+                      <img
+                          alt="User Avatar"
+                          src={adData.ppurl || process.env.PUBLIC_URL + "/blankAvatar.svg"}
+                          style={{
+                            width: "60px",
+                            height: "60px",
+                            fontSize: "48px",
+                            borderRadius: "50%",
+                            marginLeft: "10px",
+                            marginRight: "10px",
+                            background: "#f0f0f0",
+                          }}
+                      />
+                    <Text strong>{adData.user_full_name}</Text>
+                  </Link>
               </Row>
-              <Title level={3} style={{ marginBottom: "10px" }}>
+                <Row>
+                    <Card> {`${adData.address}, ${adData.neighborhood}, ${adData.district}`}</Card>
+                </Row>
+              <Title level={3} style={{marginBottom: "10px"}}>
                 <Tag color="green">{adData.price} ₺</Tag>
               </Title>
               <Descriptions column={1} size="small" bordered>
@@ -253,27 +259,30 @@ export default function AdDetail() {
                 <Descriptions.Item label="Evcil Hayvan">
                   {adData.pet === true ? "Evet" : "Hayır"}
                 </Descriptions.Item>
+
               </Descriptions>
             </div>
             <Row justify="space-between" style={{ marginTop: "20px" }}>
-              {isUserAd ? (
+                {isUserAd ? (
                   <Button type="primary" block style={{ marginBottom: "10px" }}>
                     <Link to={`/edit-advertisement/${userAd}`}>İlanı Düzenle</Link>
                   </Button>
-              ): (
+                ): null}
+                {isRoomie ? (
                   <Button type="primary" block style={{ marginBottom: "10px" }} onClick={openOfferModal}>
                     Teklif Ver
                   </Button>
-              )}
-              {isUserAd ? (
-                  <Button danger block onClick={handleRemoveAd}>
+                ) : null}
+                {isUserAd || isAdmin ? (
+                  <Button type="primary" danger block style={{ marginBottom: "10px" }} onClick={handleRemoveAd}>
                       İlanı Kaldır
                   </Button>
-              ) : (
-                  <Button danger block onClick={openReportModal}>
+                ) : null}
+                {!isUserAd && !isAdmin ? (
+                  <Button danger block style={{ marginBottom: "10px" }} onClick={openReportModal}>
                       Kullanıcıyı Raporla
                   </Button>
-              )}
+                ) : null}
             </Row>
           </Card>
         </Col>

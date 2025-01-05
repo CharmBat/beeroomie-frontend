@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Avatar, message, Typography } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import {banUser, deleteReport, getReportedUsers} from "./MiscApi";
-
-const { Text } = Typography;
+import {Col, Empty, message, Row, Spin} from 'antd';
+import AdminCard from '../components/AdminCard';
+import { banUser, deleteReport, getReportedUsers } from './MiscApi';
 
 export default function AdminPanel() {
     const [reportData, setReportData] = useState([]);
@@ -35,93 +33,49 @@ export default function AdminPanel() {
         }
     };
 
-
-    const handleBanUser = async (reportId, userId) => {
+    const handleBanUser = async (reportId, userId, banReason) => {
         try {
-            await banUser(userId);
+            await banUser(userId, banReason);
             message.success(`Kullanıcı başarıyla engellendi.`);
-            await handleDecline(reportId);
+            await deleteReport(reportId);
+            setReportData((prevData) => prevData.filter((item) => item.report_id !== reportId));
         } catch (error) {
             console.error('Kullanıcı engellenirken bir hata oluştu:', error);
             message.error('Kullanıcı engellenirken bir hata oluştu.');
         }
     };
 
-
-    const columns = [
-        {
-            title: 'Raporlayan',
-            dataIndex: 'reporter',
-            key: 'reporter',
-            render: (text) => (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Avatar icon={<UserOutlined />} />
-                    {text}
-                </div>
-            ),
-        },
-        {
-            title: 'Raporlanan',
-            dataIndex: 'reportee',
-            key: 'reportee',
-            render: (text) => (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Avatar icon={<UserOutlined />} />
-                    {text}
-                </div>
-            ),
-        },
-        {
-            title: 'Sebep',
-            dataIndex: 'description',
-            key: 'description',
-            render: (text) => (
-                <Text
-                    style={{
-                        display: 'block',
-                        whiteSpace: 'normal',
-                        wordBreak: 'break-word',
-                        maxWidth: '300px',
-                    }}
-                >
-                    {text}
-                </Text>
-            ),
-        },
-        {
-            title: 'Tarih',
-            dataIndex: 'report_date',
-            key: 'report_date',
-        },
-        {
-            title: 'Aksiyon',
-            key: 'action',
-            render: (_, record) => (
-                <div style={{ display: 'flex', gap: '10px' }}>
-                    <Button type="link" onClick={() => handleDecline(record.report_id)}>
-                        Reddet
-                    </Button>
-                    <Button type="link" danger onClick={() => handleBanUser(record.reportee_id)}>
-                        Kullanıcıyı Engelle
-                    </Button>
-                </div>
-            ),
-        },
-    ];
+    if (loading) {
+        return (
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh'}}>
+                <Spin size="large"/>
+            </div>
+        );
+    }
 
     return (
-        <div style={{ padding: '40px' }}>
-            <Table
-                columns={columns}
-                dataSource={reportData.map((item) => ({
-                    ...item,
-                    key: item.report_id,
-                }))}
-                loading={loading}
-                bordered
-                style={{ background: '#fff' }}
-                pagination={{ pageSize: 5 }}
-            />
+        <div style={{ padding: '20px' }}>
+            {reportData.length > 0 ? (
+                <Row gutter={[16, 16]}>
+                    {reportData.map((report) => (
+                        <Col key={report.report_id} xs={24} sm={12} md={8} lg={6}>
+                            <AdminCard
+                                report={report}
+                                onDecline={handleDecline}
+                                onBan={handleBanUser}
+                            />
+                        </Col>
+                    ))}
+                </Row>
+            ) : (
+                <Empty
+                    style={{ marginTop: '20px' }}
+                    imageStyle={{ height: 60 }}
+                    description={
+                        <span>Henüz bir rapor yok.</span>
+                    }
+                />
+            )}
         </div>
     );
 }

@@ -36,3 +36,12 @@ export const department = async () => {
         throw error;
     }
 }
+
+export const deleteUserProfile = async (userId) => {
+    try {
+        const response = await axiosInstance.delete(`/userpageinfo/${userId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
