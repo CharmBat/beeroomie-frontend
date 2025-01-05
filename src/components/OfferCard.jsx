@@ -45,6 +45,9 @@ export default function OfferCard({ ppurl, offerer_name, other_user_id, send_mes
                                     </Text>
                                 </>
                             )}
+                            <Button style={{marginTop:"10px"}} type={"primary"} danger onClick={onWithdrawOffer}>
+                                Teklifi Reddet
+                            </Button>
                         </div>
                     )}
                 </Col>
