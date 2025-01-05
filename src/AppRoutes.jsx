@@ -57,7 +57,7 @@ function AppRoutes({isLoggedIn, setIsLoggedIn}) {
             <Route path="/change-password/:userId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ChangePassword/></ProtectedRoute>}/>
             <Route path="/compare" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Compare/></ProtectedRoute>}/>
             <Route path="/favorite" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Favorite/></ProtectedRoute>}/>
-            <Route path="/new-user" element={<ProtectedRoute isLoggedIn={isLoggedIn}><NewUser/></ProtectedRoute>} />
+            <Route path="/new-user" element={<ProtectedRoute isLoggedIn={isLoggedIn}><NewUser setIsLoggedIn={setIsLoggedIn}/></ProtectedRoute>} />
             {/*  Admin  */}
             <Route path="/adminPanel" element={<AdminRoute isLoggedIn={isLoggedIn} isAdmin={userRole === "Admin"}><AdminPanel/></AdminRoute>}/>
             {/*  404  */}

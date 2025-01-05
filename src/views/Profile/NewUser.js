@@ -4,11 +4,14 @@ import {Card, Button, Form, Input, Row, Col, Badge, Avatar, Upload, message, Sel
 import { UploadOutlined } from '@ant-design/icons';
 import { TwoRadio } from '../../components/FilterRadio';
 import {createUserProfile, department} from './ProfileApi';
+import {photoUpload} from "../MiscApi";
+import {sendLogoutRequest} from "../Auth/AuthApi";
 
-export default function NewUser() {
+export default function NewUser({setIsLoggedIn}) {
+    const token = localStorage.getItem('authToken');
     const navigate = useNavigate();
     const [form] = Form.useForm();
-    const [ppurl, setppurl] = useState(process.env.PUBLIC_URL + "/blankAvatar.svg");
+    const [ppurl, setPpurl] = useState(process.env.PUBLIC_URL + "/blankAvatar.svg");
     const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -29,30 +32,37 @@ export default function NewUser() {
 
     const handleFormSubmit = async (values) => {
         const userData = { ...values, ppurl };
-        const userDataWithRh = { ...userData, rh: false };
-        console.log("Submitting data:", userDataWithRh);
+        const userDataWithRh = { ...userData, userid_fk: 0, rh: false };
         try {
             await createUserProfile(userDataWithRh);
-            message.success('Bilgilerini Başarıyla Aldık!');
-            navigate('/');
+            message.success('Bilgilerini Başarıyla Aldık! Lütfen Tekrar Giriş Yap.');
+            await sendLogoutRequest(token);
+            localStorage.removeItem('authToken');
+            setIsLoggedIn(false);
+            navigate('/login');
         } catch (error) {
+            console.error(error);
             message.error('Bir Sorun oluştu :(');
         }
     };
 
-    const handleAvatarChange = (info) => {
-        const file = info.file.originFileObj || info.file;
+    const handleAvatarChange = async (info) => {
+        const file = info.file;
+        if (!file) {
+            message.error("Lütfen bir dosya seçin.");
+            return;
+        }
         try {
-            const imageUrl = URL.createObjectURL(file);
-
-            // Revoke old preview URL to avoid memory leaks
-            if (ppurl) {
-                URL.revokeObjectURL(ppurl);
+            const response = await photoUpload(file);
+            if (response) {
+                setPpurl(response);
+                message.success("Fotoğraf başarıyla yüklendi!");
+            } else {
+                message.error("Fotoğraf yüklenemedi. Lütfen tekrar deneyin.");
             }
-
-            setppurl(imageUrl); // Update ppurl state with new preview URL
         } catch (error) {
-            message.error("Fotoğraf yüklenirken bir hata oluştu.");
+            console.error("Fotoğraf yüklenemedi:", error);
+            message.error("Fotoğraf yüklenemedi. Lütfen tekrar deneyin.");
         }
     };
 
@@ -159,7 +169,7 @@ export default function NewUser() {
                                     { required: true, message: 'Sana nasıl ulaşabiliriz?' },
                                 ]}
                             >
-                                <Input placeholder="@ olan" />
+                                <Input placeholder="İnsanlar sana nasıl ulaşsın" />
                             </Form.Item>
 
                             <Form.Item
