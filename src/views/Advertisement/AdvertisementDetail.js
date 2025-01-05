@@ -255,6 +255,9 @@ export default function AdDetail() {
                 <Descriptions.Item label="Evcil Hayvan">
                   {adData.pet === true ? "Evet" : "Hayır"}
                 </Descriptions.Item>
+                <Descriptions.Item label="Özellikler">
+                  {adData.utilities.join(", ")}
+                </Descriptions.Item>
               </Descriptions>
             </div>
             <Row justify="space-between" style={{ marginTop: "20px" }}>
