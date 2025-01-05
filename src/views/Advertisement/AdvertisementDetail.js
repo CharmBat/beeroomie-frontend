@@ -172,10 +172,10 @@ export default function AdDetail() {
               borderRadius: "8px",
             }}
           >
-            <Panel header="Özellikler" key="1">
+            <Panel header="Açıklama" key="1">
               <Text>{adData.description}</Text>
             </Panel>
-            <Panel header="Adres Tarifi" key="2">
+            <Panel header="Özellikler" key="2">
                 <Text> {adData.utilities.join(", ") || "Yok"} </Text>
             </Panel>
           </Collapse>
