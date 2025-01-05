@@ -1,9 +1,10 @@
 import React from 'react';
 import {Card, Row, Col, Avatar, Typography, Button} from 'antd';
+import {Link} from "react-router-dom";
 
 const { Text, Title } = Typography;
 
-export default function OfferCard({ ppurl, offerer_name, adId, send_message, isOfferByYou, contact_info, onWithdrawOffer }) {
+export default function OfferCard({ ppurl, offerer_name, other_user_id, send_message, isOfferByYou, contact_info, onWithdrawOffer }) {
     return (
         <Card
             style={{
@@ -14,15 +15,18 @@ export default function OfferCard({ ppurl, offerer_name, adId, send_message, isO
         >
             <Row justify="space-between" align="middle" style={{ height: '100%' }}>
                 <Col style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Avatar
-                        size={64}
-                        src={ppurl || process.env.PUBLIC_URL + "/blankAvatar.svg"}
-                    />
-                    <div>
-                        <Title level={5} style={{ marginBottom: '4px' }}>
-                            {offerer_name}
-                        </Title>
-                    </div>
+                    <Link to={`/profile/${other_user_id}`}
+                          className="d-flex align-items-center gap-2 justify-content-center">
+                        <Avatar
+                            size={64}
+                            src={ppurl || process.env.PUBLIC_URL + "/blankAvatar.svg"}
+                        />
+                        <div>
+                            <Title level={5} style={{ marginBottom: '4px' }}>
+                                {offerer_name}
+                            </Title>
+                        </div>
+                    </Link>
                 </Col>
 
                 <Col style={{ textAlign: 'right' }}>
