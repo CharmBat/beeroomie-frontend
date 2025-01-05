@@ -53,7 +53,7 @@ function AppRoutes({isLoggedIn, setIsLoggedIn}) {
             <Route path="/offer" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Offer/></ProtectedRoute>}/>
             <Route path="/publishAd" element={<ProtectedRoute isLoggedIn={isLoggedIn}><PublishAdvertisement/></ProtectedRoute>}/>
             <Route path="/profile/:userId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Profile/></ProtectedRoute>}/>
-            <Route path="/edit-profile/:userId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><EditProfile/></ProtectedRoute>}/>
+            <Route path="/edit-profile/:userId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><EditProfile setIsLoggedIn={setIsLoggedIn}/></ProtectedRoute>}/>
             <Route path="/change-password/:userId" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ChangePassword/></ProtectedRoute>}/>
             <Route path="/compare" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Compare/></ProtectedRoute>}/>
             <Route path="/favorite" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Favorite/></ProtectedRoute>}/>

@@ -25,6 +25,7 @@ export default function AdDetail() {
   const userAd = localStorage.getItem("userAd");
   const userRole = localStorage.getItem("userRole");
   const isRoomie = userRole === "Roomie";
+  const isAdmin = userRole === "Admin";
   const isUserAd = userAd === adId;
   const [adData, setAdData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -271,15 +272,16 @@ export default function AdDetail() {
                     Teklif Ver
                   </Button>
                 ) : null}
-                {isUserAd ? (
-                  <Button danger block onClick={handleRemoveAd}>
+                {isUserAd || isAdmin ? (
+                  <Button type="primary" danger block style={{ marginBottom: "10px" }} onClick={handleRemoveAd}>
                       İlanı Kaldır
                   </Button>
-                ) : (
-                  <Button danger block onClick={openReportModal}>
+                ) : null}
+                {!isUserAd && !isAdmin ? (
+                  <Button danger block style={{ marginBottom: "10px" }} onClick={openReportModal}>
                       Kullanıcıyı Raporla
                   </Button>
-                )}
+                ) : null}
             </Row>
           </Card>
         </Col>

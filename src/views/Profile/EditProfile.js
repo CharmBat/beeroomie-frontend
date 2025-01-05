@@ -1,19 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {Card, Avatar, Form, Input, Button, Divider, Row, Col, Badge, Upload, Spin, message, Select} from 'antd';
+import {Card, Avatar, Form, Input, Button, Divider, Row, Col, Badge, Upload, Spin, message, Select, Modal} from 'antd';
 import {UploadOutlined, ArrowLeftOutlined} from '@ant-design/icons';
 import {TwoRadio} from '../../components/FilterRadio';
-import {getUserProfile, updateUserProfile, department} from './ProfileApi';
+import {getUserProfile, updateUserProfile, deleteUserProfile, department} from './ProfileApi';
 import {photoUpload} from "../MiscApi";
 import {useRoleColor} from "../../hooks/useRoleColor";
 
-export default function EditProfile() {
+export default function EditProfile({setIsLoggedIn}) {
     const navigate = useNavigate();
     const [form] = Form.useForm();
     const [ppurl, setPpurl] = useState(process.env.PUBLIC_URL + "/blankAvatar.svg");
     const [profileData, setProfileData] = useState(null);
     const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const userId = localStorage.getItem('userId');
     const userRole = localStorage.getItem('userRole');
     const roleColor = useRoleColor();
@@ -83,6 +84,20 @@ export default function EditProfile() {
         }
     };
 
+    const handleDeleteProfile = async () => {
+        try {
+            await deleteUserProfile(userId);
+            message.success('Profiliniz başarıyla silindi.');
+            localStorage.clear();
+            setIsLoggedIn(false);
+            navigate('/login');
+        } catch (error) {
+            console.error('Profil silme başarısız:', error);
+            message.error('Profil silme başarısız. Lütfen tekrar deneyin.');
+        } finally {
+            setIsModalOpen(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -197,25 +212,47 @@ export default function EditProfile() {
 
                             <Divider style={{margin: '20px 0'}}/>
                             <Row justify="end" align="middle" style={{marginBottom: '20px'}}>
-                                <Button
-                                    type="default"
-                                    icon={<ArrowLeftOutlined/>}
-                                    style={{marginRight: '10px'}}
-                                    onClick={() => navigate(-1)}
-                                >
-                                    Geri Dön
-                                </Button>
-                                <Button
-                                    type="primary"
-                                    onClick={() => form.submit()}
-                                >
-                                    Kaydet
-                                </Button>
+                                <Col span={8}>
+                                    <Button
+                                        type="primary"
+                                        danger
+                                        onClick={() => setIsModalOpen(true)}
+                                    >
+                                        Profilini Sil
+                                    </Button>
+                                </Col>
+                                <Col span={8} offset={8}>
+                                    <Button
+                                        type="default"
+                                        icon={<ArrowLeftOutlined/>}
+                                        style={{marginRight: '10px'}}
+                                        onClick={() => navigate(-1)}
+                                    >
+                                        Geri Dön
+                                    </Button>
+                                    <Button
+                                        type="primary"
+                                        onClick={() => form.submit()}
+                                    >
+                                        Kaydet
+                                    </Button>
+                                </Col>
                             </Row>
                         </Form>
                     </Col>
                 </Row>
             </Card>
+            <Modal
+                title="Emin misiniz?"
+                open={isModalOpen}
+                onOk={handleDeleteProfile}
+                onCancel={() => setIsModalOpen(false)}
+                okText="Evet, Sil"
+                cancelText="Hayır, İptal Et"
+                okButtonProps={{ style: { backgroundColor: 'red', borderColor: 'red', color: 'white' } }}
+            >
+                <p>Profilinizi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</p>
+            </Modal>
         </div>
     );
 }

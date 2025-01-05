@@ -9,7 +9,7 @@ export default function ConfirmEmail() {
     (async () => {
         try {
             const response = await sendConfirmEmailRequest(token);
-            if(response.error_status === 200){
+            if(response.error_status === 201){
                 message.success('Doğrulandı! Giriş yapabilirsiniz.');
                 navigate('/login');
             }
