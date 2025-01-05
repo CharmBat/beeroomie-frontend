@@ -128,7 +128,14 @@ export default function PublishAdvertisement() {
     );
 
     const handleFormSubmit = async (values) => {
+        if (imageUrls.length === 0) {
+            message.error("Lütfen en az bir fotoğraf yükleyin.");
+            return;
+        }
         const payload = {...values, photos: imageUrls, userid_fk: userId, adpageid: 0, ad_date: formattedDate};
+        if (payload.utilites === undefined) {
+            payload.utilites = [];
+        }
         try {
             const response = await publishAd(payload);
             if (response.error_status === 201) {
@@ -137,7 +144,7 @@ export default function PublishAdvertisement() {
                     localStorage.setItem("userRole", "Housie");
                 const userAd = response.user_message.match(/Advertisement (\d+) created successfully/)[1];
                 localStorage.setItem("userAd", userAd);
-                navigate("/");
+                navigate(`/advertisement/${userAd}`);
             } else {
                 message.error("İlanınız yayınlanamadı. Lütfen tekrar deneyin.");
             }

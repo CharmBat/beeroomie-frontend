@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Typography, message } from "antd";
+import {Row, Col, Typography, message, Spin} from "antd";
 import OfferCard from "../../components/OfferCard";
 import { useState, useEffect } from "react";
 import { getOffers, withdrawOffer } from "./AdApi";
@@ -8,6 +8,7 @@ const { Title } = Typography;
 
 export default function OfferPage() {
   const [offersByYou, setOffersByYou] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchOffers = async () => {
@@ -16,6 +17,8 @@ export default function OfferPage() {
             setOffersByYou(response.offers);
         } catch (error) {
             message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -24,8 +27,9 @@ export default function OfferPage() {
 
   const handleWithdrawOffer = async (offerId) => {
     try{
-      withdrawOffer(offerId);
-      message.success("Teklif başarıyla geri çekildi.");
+      await withdrawOffer(offerId);
+        message.success("Teklif başarıyla geri çekildi.");
+        setOffersByYou((prevOffers) => prevOffers.filter((offer) => offer.offer_id !== offerId));
     } catch (error) {
       message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
     }
@@ -35,6 +39,14 @@ export default function OfferPage() {
 
   const leftOffersByYou = offersByYou.filter((_, index) => index % 2 === 0);
   const rightOffersByYou = offersByYou.filter((_, index) => index % 2 !== 0);
+
+    if (loading) {
+        return (
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh"}}>
+                <Spin size="large"/>
+            </div>
+        );
+    }
 
   return (
     <div style={{ padding: "20px", margin: "auto" }}>

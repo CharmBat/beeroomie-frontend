@@ -60,6 +60,11 @@ export default function Filter({onFilterSubmit}) {
     }, []);
 
     const handleDistrictChange = (value) => {
+        if (value === undefined) {
+            setSelectedDistrict(null);
+            setNeighborhoods([]);
+            return;
+        }
         setSelectedDistrict(value);
     };
 
@@ -109,7 +114,7 @@ export default function Filter({onFilterSubmit}) {
 
                 {/* Location */}
                 <Form.Item label="İlçe" name="district">
-                    <Select placeholder="Seçin" onChange={handleDistrictChange}>
+                    <Select allowClear={true} placeholder="Seçin" onChange={handleDistrictChange}>
                         {districts.map((option) => (
                             <Option key={option.districtid} value={option.districtid}>
                                 {option.district_name}
@@ -118,7 +123,7 @@ export default function Filter({onFilterSubmit}) {
                     </Select>
                 </Form.Item>
                 <Form.Item label="Mahalle" name="neighborhood">
-                    <Select placeholder="Seçin">
+                    <Select allowClear={true} placeholder="Seçin">
                         {neighborhoods.map((option) => (
                             <Option
                                 key={option.neighborhoodid}
@@ -132,7 +137,7 @@ export default function Filter({onFilterSubmit}) {
 
                 {/* Room Count */}
                 <Form.Item label="Oda Sayısı" name="number_of_rooms">
-                    <Select placeholder="Seçin">
+                    <Select allowClear={true} placeholder="Seçin">
                         {n_roomid.map((option) => (
                             <Option
                                 key={option.n_roomid}

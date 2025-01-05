@@ -28,9 +28,10 @@ export const getReportedUsers = async () => {
     }
 }
 
-export const banUser = async (userId) => {
+export const banUser = async (userId, banReason) => {
     try {
-        const response = await axiosInstance.post(`/administration/ban/${userId}`);
+        const response = await axiosInstance.delete(`/administration/ban/${userId}?ban_reason=${banReason}`);
+        console.log('Ban Response:', response);
         return response.data;
     } catch (error) {
         console.error("Hata:", error);
