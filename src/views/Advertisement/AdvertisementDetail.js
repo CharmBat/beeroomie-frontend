@@ -172,11 +172,11 @@ export default function AdDetail() {
               borderRadius: "8px",
             }}
           >
-            <Panel header="Açıklama" key="1">
+            <Panel header="Özellikler" key="1">
               <Text>{adData.description}</Text>
             </Panel>
             <Panel header="Adres Tarifi" key="2">
-              <Text>{`${adData.address}, ${adData.neighborhood}, ${adData.district}`}</Text>
+                <Text> {adData.utilities.join(", ") || "Yok"} </Text>
             </Panel>
           </Collapse>
         </Col>
@@ -213,6 +213,9 @@ export default function AdDetail() {
                     <Text strong>{adData.user_full_name}</Text>
                   </Link>
               </Row>
+                <Row>
+                    <Card> {`${adData.address}, ${adData.neighborhood}, ${adData.district}`}</Card>
+                </Row>
               <Title level={3} style={{marginBottom: "10px"}}>
                 <Tag color="green">{adData.price} ₺</Tag>
               </Title>
@@ -256,9 +259,7 @@ export default function AdDetail() {
                 <Descriptions.Item label="Evcil Hayvan">
                   {adData.pet === true ? "Evet" : "Hayır"}
                 </Descriptions.Item>
-                <Descriptions.Item label="Özellikler">
-                  {adData.utilities.join(", ") || "Yok"}
-                </Descriptions.Item>
+
               </Descriptions>
             </div>
             <Row justify="space-between" style={{ marginTop: "20px" }}>

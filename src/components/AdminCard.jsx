@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Typography, Button, Space } from 'antd';
+import {Link} from "react-router-dom";
 
 const { Text } = Typography;
 
@@ -7,8 +8,8 @@ const AdminCard = ({ report, onDecline, onBan }) => {
     return (
         <Card style={{ borderRadius: '8px', overflow: 'hidden' }}>
             <Space direction="vertical" size="small">
-                <Text><strong>Raporlayan:</strong> {report.reporter}</Text>
-                <Text><strong>Raporlanan:</strong> {report.reportee}</Text>
+                <Link to={`/profile/${report.reporter_id}`} className="text-decoration-none" ><Text><strong>Raporlayan:</strong> {report.reporter}</Text></Link>
+                <Link to={`/profile/${report.reportee_id}`} className="text-decoration-none"><Text><strong>Raporlanan:</strong> {report.reportee}</Text></Link>
                 <Text><strong>Sebep:</strong> {report.description}</Text>
                 <Text><strong>Tarih:</strong> {report.report_date}</Text>
                 <Space>

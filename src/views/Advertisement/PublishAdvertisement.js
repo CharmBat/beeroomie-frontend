@@ -144,7 +144,7 @@ export default function PublishAdvertisement() {
                     localStorage.setItem("userRole", "Housie");
                 const userAd = response.user_message.match(/Advertisement (\d+) created successfully/)[1];
                 localStorage.setItem("userAd", userAd);
-                navigate("/");
+                navigate(`/advertisement/${userAd}`);
             } else {
                 message.error("İlanınız yayınlanamadı. Lütfen tekrar deneyin.");
             }
