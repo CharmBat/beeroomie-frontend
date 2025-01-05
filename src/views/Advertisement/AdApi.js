@@ -108,6 +108,7 @@ export const updateAd = async (adData) => {
         return response.data;
     } catch (error) {
         throw error;
+    }
 };
  
 export const withdrawOffer = async (offerId) => {
@@ -116,7 +117,7 @@ export const withdrawOffer = async (offerId) => {
         return response.data;
     } catch (error) {
         throw error;
-  
+    }
 };
 
 export const createOffer = async (offerData) => {
