@@ -12,6 +12,7 @@ export default function OfferModal({ adId, isOpen, onClose }) {
         try{
             await createOffer(offerData);
             message.success("Teklifiniz başarıyla gönderildi.");
+            onClose();
         } catch(error){
             message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
         }
