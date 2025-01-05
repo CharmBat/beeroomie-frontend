@@ -131,10 +131,12 @@ export default function PublishAdvertisement() {
         const payload = {...values, photos: imageUrls, userid_fk: userId, adpageid: 0, ad_date: formattedDate};
         try {
             const response = await publishAd(payload);
-            if (response.error_code === 201) {
+            if (response.error_status === 201) {
                 message.success("İlanınız başarıyla yayınlandı!");
                 if (userRole === "Roomie")
                     localStorage.setItem("userRole", "Housie");
+                const userAd = response.user_message.match(/Advertisement (\d+) created successfully/)[1];
+                localStorage.setItem("userAd", userAd);
                 navigate("/");
             } else {
                 message.error("İlanınız yayınlanamadı. Lütfen tekrar deneyin.");
