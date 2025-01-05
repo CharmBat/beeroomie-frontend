@@ -195,7 +195,7 @@ useEffect(() => {
         try {
             await updateAd(payload);
             message.success("İlan başarıyla güncellendi!");
-            navigate(`/advertisements/${adId}`);
+            navigate(`/advertisement/${adId}`);
         } catch (error) {
             console.error(error);
             message.error("İlan güncellenemedi. Lütfen tekrar deneyin.");
@@ -423,7 +423,7 @@ useEffect(() => {
 
                     <Form.Item>
                         <Button type="primary" htmlType="submit" block>
-                            İlanı Yayınla
+                            İlanı Güncelle
                         </Button>
                         <Button
                             type="default"
