@@ -14,6 +14,7 @@ import {
 } from "antd";
 import {Link, useParams} from "react-router-dom";
 import ReportModal from "../../components/ReportModal";
+import OfferModal from "../../components/OfferModal";
 import {getAdDetail, removeAd} from "./AdApi";
 
 const { Title, Text } = Typography;
@@ -28,6 +29,7 @@ export default function AdDetail() {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState("");
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchAd = async () => {
@@ -70,6 +72,14 @@ export default function AdDetail() {
 
   const closeReportModal = () => {
     setIsReportModalOpen(false);
+  };
+
+  const openOfferModal = () => {
+    setIsOfferModalOpen(true);
+  };
+
+  const closeOfferModal = () => {
+    setIsOfferModalOpen(false);
   };
 
   const handleRemoveAd = async () => {
@@ -251,8 +261,8 @@ export default function AdDetail() {
                     <Link to={`/edit-advertisement/${userAd}`}>İlanı Düzenle</Link>
                   </Button>
               ): (
-                  <Button type="primary" block onClick={openReportModal} style={{ marginBottom: "10px" }}>
-                      Teklif Ver
+                  <Button type="primary" block style={{ marginBottom: "10px" }} onClick={openOfferModal}>
+                    Teklif Ver
                   </Button>
               )}
               {isUserAd ? (
@@ -269,10 +279,15 @@ export default function AdDetail() {
         </Col>
       </Row>
       <ReportModal
-        reportedUserId={adData.userId}
-        reportedUserName={adData.user}
+        reportedUserId={adData.userid_fk}
+        reportedUserName={adData.user_full_name}
         isOpen={isReportModalOpen}
         onClose={closeReportModal}
+      />
+      <OfferModal
+        adId={adData.adpageid}
+        isOpen={isOfferModalOpen}
+        onClose={closeOfferModal}
       />
     </div>
   );

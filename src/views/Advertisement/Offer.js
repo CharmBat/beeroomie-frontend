@@ -2,7 +2,7 @@ import React from "react";
 import { Row, Col, Typography, message } from "antd";
 import OfferCard from "../../components/OfferCard";
 import { useState, useEffect } from "react";
-import { getOffers } from "./AdApi";
+import { getOffers, withdrawOffer } from "./AdApi";
 
 const { Title } = Typography;
 
@@ -13,9 +13,7 @@ export default function OfferPage() {
     const fetchOffers = async () => {
         try {
             const response = await getOffers();
-            if(response.error_code === 200){
-              setOffersByYou(response.offers);
-            }
+            setOffersByYou(response.offers);
         } catch (error) {
             message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
         }
@@ -23,6 +21,15 @@ export default function OfferPage() {
 
     fetchOffers();
   }, []);
+
+  const handleWithdrawOffer = async (offerId) => {
+    try{
+      withdrawOffer(offerId);
+      message.success("Teklif başarıyla geri çekildi.");
+    } catch (error) {
+      message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+    }
+  };
   
   const role = localStorage.getItem("userRole");
 
@@ -41,14 +48,14 @@ export default function OfferPage() {
             {/* Left Column */}
             <Col xs={24} md={12}>
               {leftOffersByYou.map((offer, index) => (
-                <OfferCard key={`byYou-left-${index}`} {...offer} />
+                <OfferCard key={`byYou-left-${index}`} {...offer} isOfferByYou={role === "Roomie" ? true : false} onWithdrawOffer={() => handleWithdrawOffer(offer.offer_id)}/>
               ))}
             </Col>
 
             {/* Right Column */}
             <Col xs={24} md={12}>
               {rightOffersByYou.map((offer, index) => (
-                <OfferCard key={`byYou-right-${index}`} {...offer} />
+                <OfferCard key={`byYou-right-${index}`}  {...offer} isOfferByYou={role === "Roomie" ? true : false} onWithdrawOffer={() => handleWithdrawOffer(offer.offer_id)} />
               ))}
             </Col>
           </Row>
@@ -64,13 +71,13 @@ export default function OfferPage() {
           <Row gutter={16}>
             <Col xs={24} md={12}>
               {leftOffersByYou.map((offer, index) => (
-                <OfferCard key={`left-${index}`} {...offer} />
+                <OfferCard key={`left-${index}`}  {...offer} isOfferByYou={role === "Roomie" ? true : false} onWithdrawOffer={() => handleWithdrawOffer(offer.offer_id)} />
               ))}
             </Col>
 
             <Col xs={24} md={12}>
               {rightOffersByYou.map((offer, index) => (
-                <OfferCard key={`right-${index}`} {...offer} />
+                <OfferCard key={`right-${index}`}  {...offer} isOfferByYou={role === "Roomie" ? true : false} onWithdrawOffer={() => handleWithdrawOffer(offer.offer_id)} />
               ))}
             </Col>
           </Row>

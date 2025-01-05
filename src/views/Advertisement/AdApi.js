@@ -108,5 +108,22 @@ export const updateAd = async (adData) => {
         return response.data;
     } catch (error) {
         throw error;
+};
+ 
+export const withdrawOffer = async (offerId) => {
+    try{
+        const response = await axiosInstance.delete(`/offers/${offerId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+  
+};
+
+export const createOffer = async (offerData) => {
+    try{
+        const response = await axiosInstance.post(`/offers/?adpageid=${offerData.adId}&description=${offerData.description}`);
+        return response.data;
+    }catch (error) {
+        throw error;
     }
 };
