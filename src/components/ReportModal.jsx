@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Input, Button } from 'antd';
+import {Modal, Input, Button, message} from 'antd';
 import {reportUser} from "../views/MiscApi";
 
 const { TextArea } = Input;
@@ -8,10 +8,15 @@ export default function ReportModal({ reportedUserId, reportedUserName, isOpen, 
     const [description, setDescription] = useState('');
 
     const handleReport = async () => {
-        const report = {reportedUserId, description};
-        console.log("Reporting:", report);
-        await reportUser(report);
-        onClose();
+        const report = {reportee: reportedUserId, description};
+        try {
+            await reportUser(report);
+            message.success('Kullanıcı başarıyla raporlandı.');
+            onClose();
+        } catch (error) {
+            console.error('Rapor oluşturulurken bir hata oluştu:', error);
+            message.error('Rapor oluşturulurken bir hata oluştu.');
+        }
     };
 
     return (
