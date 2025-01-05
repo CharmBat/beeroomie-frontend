@@ -61,3 +61,36 @@ a {
 .ant-image-preview-operations {
     display: none;
 }
+
+.toggle-group {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+}
+
+.toggle-button {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    padding: 8px 16px;
+    margin: 0;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    user-select: none;
+}
+
+.toggle-button .ant-checkbox-inner {
+    display: none;
+}
+
+.toggle-button.active {
+    background-color: #1890ff;
+    color: white;
+    border-color: #1890ff;
+}
+
+.toggle-button:hover {
+    background-color: #e6f7ff;
+    border-color: #91d5ff;
+}

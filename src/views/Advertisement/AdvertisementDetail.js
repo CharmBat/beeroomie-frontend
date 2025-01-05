@@ -12,16 +12,19 @@ import {
   Collapse,
   message,
 } from "antd";
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import ReportModal from "../../components/ReportModal";
-import { getAdDetail } from "./AdApi";
 import OfferModal from "../../components/OfferModal";
+import {getAdDetail, removeAd} from "./AdApi";
 
 const { Title, Text } = Typography;
 const { Panel } = Collapse;
 
 export default function AdDetail() {
   const { adId } = useParams();
+  const userAd = localStorage.getItem("userAd");
+  const userPic = localStorage.getItem("userPic");
+  const isUserAd = userAd === adId;
   const [adData, setAdData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState("");
@@ -79,6 +82,24 @@ export default function AdDetail() {
     setIsOfferModalOpen(false);
   };
 
+  const handleRemoveAd = async () => {
+    try {
+      const response = await removeAd(adId);
+      if (response.error_status === 200) {
+        message.success("İlan başarıyla kaldırıldı.");
+        localStorage.setItem("userAd", null);
+        localStorage.setItem("userRole", "Roomie");
+        window.location.href = "/";
+      } else {
+        message.error(response.system_message);
+      }
+    } catch (error) {
+      message.error(
+        "Sunucuya bağlanılamadı. Lütfen daha sonra tekrar deneyin."
+      );
+    }
+  }
+
   return (
     <div style={{ padding: "20px", minHeight: "100vh" }}>
       <Row
@@ -109,7 +130,7 @@ export default function AdDetail() {
             style={{
               width: "100%",
               maxHeight: "400px",
-              objectFit: "cover",
+              objectFit: "contain",
               borderRadius: "8px",
               marginBottom: "10px",
             }}
@@ -125,7 +146,7 @@ export default function AdDetail() {
                   preview={false}
                   style={{
                     width: "100%",
-                    height: "80px",
+                    height: "120px",
                     objectFit: "cover",
                     cursor: "pointer",
                     border:
@@ -171,14 +192,14 @@ export default function AdDetail() {
             }}
           >
             <div>
-              <Row align="middle" gutter={16} style={{ marginBottom: "20px" }}>
+              <Row align="middle" gutter={16} style={{ marginBottom: "20px"}}>
                 <Col>
                   <img
                     alt="User Avatar"
-                    src={process.env.PUBLIC_URL + "/blankAvatar.svg"}
+                    src={userPic || process.env.PUBLIC_URL + "/blankAvatar.svg"}
                     style={{
-                      width: "48px",
-                      height: "48px",
+                      width: "60px",
+                      height: "60px",
                       fontSize: "48px",
                       borderRadius: "50%",
                       background: "#f0f0f0",
@@ -235,15 +256,24 @@ export default function AdDetail() {
               </Descriptions>
             </div>
             <Row justify="space-between" style={{ marginTop: "20px" }}>
-              <Button type="default" block style={{ marginBottom: "10px" }}>
-                Karşılaştır
-              </Button>
-              <Button type="primary" block style={{ marginBottom: "10px" }} onClick={openOfferModal}>
-                Teklif Ver
-              </Button>
-              <Button danger block onClick={openReportModal}>
-                Kullanıcıyı Raporla
-              </Button>
+              {isUserAd ? (
+                  <Button type="primary" block style={{ marginBottom: "10px" }}>
+                    <Link to={`/edit-advertisement/${userAd}`}>İlanı Düzenle</Link>
+                  </Button>
+              ): (
+                  <Button type="primary" block style={{ marginBottom: "10px" }} onClick={openOfferModal}>
+                    Teklif Ver
+                  </Button>
+              )}
+              {isUserAd ? (
+                  <Button danger block onClick={handleRemoveAd}>
+                      İlanı Kaldır
+                  </Button>
+              ) : (
+                  <Button danger block onClick={openReportModal}>
+                      Kullanıcıyı Raporla
+                  </Button>
+              )}
             </Row>
           </Card>
         </Col>

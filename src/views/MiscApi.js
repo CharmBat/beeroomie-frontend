@@ -91,7 +91,6 @@ export const addFavorite = async (adId) => {
 export const removeFavorite = async (adId) => {
     try {
         const response = await axiosInstance.delete(`/favorites?adpage_id=${adId}`);
-        console.log(response);
         return response.data;
     } catch (error) {
         console.error("Hata:", error);

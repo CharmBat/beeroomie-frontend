@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { EnvironmentOutlined, UserOutlined, StarOutlined, StarFilled, SwapOutlined } from '@ant-design/icons';
 import {useState} from 'react';
 
-export default function AdCard({id, title, user, location, pets, smoking, price, images, isCompared, onCompareChange, isFavorited, onFavoriteChange}) {
+export default function AdCard({id, name, title, user, location, pets, smoking, price, images, isCompared, onCompareChange, isFavorited, onFavoriteChange}) {
     const [selectedImage, setSelectedImage] = useState(images[0]);
 
     const handleCompareChange = () => {
@@ -25,7 +25,7 @@ export default function AdCard({id, title, user, location, pets, smoking, price,
             }}
         >
             {/* Image Gallery */}
-            <div style={{ marginBottom: "15px", position: "relative" }}>
+            <div style={{marginBottom: "15px", position: "relative"}}>
                 {/* Main Image */}
                 <img
                     alt={title}
@@ -50,7 +50,7 @@ export default function AdCard({id, title, user, location, pets, smoking, price,
                     <Tooltip title={isFavorited ? "Favorilerden Kaldır" : "Favorilere Ekle"}>
                         <Button
                             shape="circle"
-                            icon={isFavorited ? <StarFilled style={{ color: "#fadb14" }} /> : <StarOutlined />}
+                            icon={isFavorited ? <StarFilled style={{color: "#fadb14"}}/> : <StarOutlined/>}
                             onClick={handleFavoriteChange}
                             style={{
                                 backgroundColor: isFavorited ? "#fff" : "rgba(255, 255, 255, 0.9)",
@@ -62,7 +62,7 @@ export default function AdCard({id, title, user, location, pets, smoking, price,
                     <Tooltip title={isCompared ? "Karşılaştırmadan Kaldır" : "Karşılaştır"}>
                         <Button
                             shape="circle"
-                            icon={<SwapOutlined />}
+                            icon={<SwapOutlined/>}
                             onClick={handleCompareChange}
                             style={{
                                 backgroundColor: isCompared ? "#40a9ff" : "rgba(255, 255, 255, 0.9)",
@@ -75,7 +75,7 @@ export default function AdCard({id, title, user, location, pets, smoking, price,
             </div>
 
             {/* Thumbnails */}
-            <Row gutter={[8, 8]} style={{ marginBottom: "10px" }}>
+            <Row gutter={[8, 8]} style={{marginBottom: "10px"}}>
                 {images.slice(0, 4).map((image, index) => (
                     <Col key={index} span={6}>
                         <img
@@ -117,7 +117,7 @@ export default function AdCard({id, title, user, location, pets, smoking, price,
                 }}
                 title={`${user}`}
             >
-                <UserOutlined /> {user}
+                <UserOutlined/> {name}
             </p>
             <p
                 style={{
@@ -129,17 +129,17 @@ export default function AdCard({id, title, user, location, pets, smoking, price,
                 }}
                 title={`${location}`}
             >
-                <EnvironmentOutlined /> {location}
+                 <EnvironmentOutlined/> {location}
             </p>
-            <p style={{ color: "#888", margin: "5px 0" }}>
-                🐾 {pets ? "Evcil Hayvan" : "Evcil Hayvan Yok"}
+            <p style={{color: "#888", margin: "5px 0"}}>
+                🐾{pets ? "Evcil Hayvan olabilir" : "Evcil Hayvan olamaz"}
             </p>
-            <p style={{ color: "#888", margin: "5px 0" }}>
-                🚬 {smoking ? "Sigara" : "Sigara Yok"}
+            <p style={{color: "#888", margin: "5px 0"}}>
+                🚬{smoking ? "Sigara içilebilir" : "Sigara içilemez"}
             </p>
             <Row justify="space-between" align="middle">
                 <Col>
-                    <Tag color="green" style={{ fontSize: "16px" }}>
+                    <Tag color="green" style={{fontSize: "16px"}}>
                         {price} ₺
                     </Tag>
                 </Col>

@@ -21,6 +21,7 @@ export default function Login({ setIsLoggedIn }) {
                     localStorage.setItem('userId', null);
                     localStorage.setItem('userName', null);
                     localStorage.setItem('userPic', null);
+                    localStorage.setItem('userAd', null);
                     localStorage.setItem('userRole', 'NewUser');
                 }
                 else {
@@ -29,6 +30,7 @@ export default function Login({ setIsLoggedIn }) {
                     localStorage.setItem('userPic', userInfo.user.ppurl);
                     const role = userInfo.user.role ? "Admin" : userInfo.user.rh ? "Housie" : "Roomie";
                     localStorage.setItem('userRole', role);
+                    localStorage.setItem('userAd', userInfo.user.adv_id);
                 }
                 message.success('Giriş başarılı!');
 

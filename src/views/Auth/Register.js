@@ -55,7 +55,14 @@ export default function Register() {
                     name="email"
                     rules={[
                         { required: true, message: 'Lütfen e-posta adresinizi girin!' },
-                        { type: 'email', message: 'Geçerli bir e-posta girin!' }
+                        ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (value && value.endsWith('@itu.edu.tr')) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('Lütfen İTÜ mail adresinizi giriniz!'));
+                            },
+                        }),
                     ]}
                 >
                     <Input placeholder="E-posta" />

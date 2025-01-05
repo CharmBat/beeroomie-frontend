@@ -39,6 +39,15 @@ export const getAdById = async (id) => {
     }
 }
 
+export const removeAd = async (adId) => {
+    try {
+        const response = await axiosInstance.delete(`/advertisement/${adId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const getDistricts = async () => {
     try{
         const response = await axiosInstance.get('/advertisement/district');
@@ -93,13 +102,21 @@ export const getOffers = async () => {
     }
 };
 
+export const updateAd = async (adData) => {
+    try {
+        const response = await axiosInstance.put(`/advertisement/${adData.adpageid}`, adData);
+        return response.data;
+    } catch (error) {
+        throw error;
+};
+ 
 export const withdrawOffer = async (offerId) => {
     try{
         const response = await axiosInstance.delete(`/offers/${offerId}`);
         return response.data;
     } catch (error) {
         throw error;
-    }
+  
 };
 
 export const createOffer = async (offerData) => {
