@@ -128,7 +128,14 @@ export default function PublishAdvertisement() {
     );
 
     const handleFormSubmit = async (values) => {
+        if (imageUrls.length === 0) {
+            message.error("Lütfen en az bir fotoğraf yükleyin.");
+            return;
+        }
         const payload = {...values, photos: imageUrls, userid_fk: userId, adpageid: 0, ad_date: formattedDate};
+        if (payload.utilites === undefined) {
+            payload.utilites = [];
+        }
         try {
             const response = await publishAd(payload);
             if (response.error_status === 201) {
