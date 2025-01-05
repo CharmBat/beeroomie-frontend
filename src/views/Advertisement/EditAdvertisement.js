@@ -22,89 +22,118 @@ import {
     getUtilities,
 } from "./AdApi";
 import {photoUpload} from "../MiscApi";
+import {updateAd} from "./AdApi";
 
 
 
 export default function EditAdvertisement() {
     const navigate = useNavigate();
     const adId = localStorage.getItem("userAd");
+    const userId = localStorage.getItem("userId");
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+
+    const { Option } = Select;
 
     // Form için
     const [form] = Form.useForm();
     const [imageFiles, setImageFiles] = useState([]);
     const [imageUrls, setImageUrls] = useState([]);
-    const [adDetails, setAdDetails] = useState(null);
-    const [initialDistrict, setInitialDistrict] = useState(0);
 
     // utilities için
     const [utilites, setUtilities] = useState([]);
     const [selectedUtilities, setSelectedUtilities] = useState([]);
 
-    console.log(utilites);
     // ilçeler için
     const [districts, setDistricts] = useState([]);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
 
-    console.log(districts);
     // mahalleler için
     const [neighborhoods, setNeighborhoods] = useState([]);
     const [selectedNeighborhood, setSelectedNeighborhood] = useState(null);
-console.log(neighborhoods);
     // oda sayısı için
     const [n_roomid, setN_roomid] = useState([]);
     const [selectedN_roomid, setSelectedN_roomid] = useState(null);
-console.log(n_roomid);
+
     useEffect(() => {
-        const fetchAdvertisementDetails = async () => {
-            try {
-                const response = await getAdDetail(adId);
-                if (response === null) {
-                    message.error("İlan bilgileri alınamadı.");
-                    return;
+            const fetchOptions = async () => {
+                try {
+                    const response = await getUtilities();
+                    setUtilities(response.utilities);
+                } catch (error) {
+                    message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
                 }
-                const adDetails = response.advertisement_list[0];
-                // console.log(adDetails.districtid_fk);
-                setInitialDistrict(adDetails.districtid_fk);
-                setAdDetails(adDetails);
-                //setSelectedDistrict(adDetails.districtid_fk);
-                // setSelectedNeighborhood(adDetails.neighborhood);
-                // setSelectedN_roomid(adDetails.n_room);
-                // setSelectedUtilities(adDetails.utilities);
-                setImageUrls(adDetails.photos || []);
-                const transformedImageFiles = (adDetails.photos || []).map((url, index) => ({
-                    uid: `-${index + 1}`,
-                    name: `image-${index + 1}.png`,
-                    status: 'done',
-                    url,
-                }));
-                setImageFiles(transformedImageFiles || []);
-            } catch (error) {
+            };
+    
+            fetchOptions();
+        }, []);
+    
+        useEffect(() => {
+            const fetchDistricts = async () => {
+                try {
+                    const response = await getDistricts();
+                    setDistricts(response.districts);
+                } catch (error) {
+                    message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+                }
+            };
+    
+            fetchDistricts();
+        }, []);
+    
+        useEffect(() => {
+            const fetchNeighborhoods = async () => {
+                if (selectedDistrict === null) return;
+                try {
+                    const response = await getNeighborhoods(selectedDistrict);
+                    setNeighborhoods(response.neighborhoods);
+                } catch (error) {
+                    message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+                }
+            };
+    
+            fetchNeighborhoods();
+        }, [selectedDistrict]);
+    
+        useEffect(() => {
+            const fetchN_room = async () => {
+                try {
+                    const response = await getN_rooms();
+                    setN_roomid(response.rooms);
+                } catch (error) {
+                    message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+                }
+            };
+    
+            fetchN_room();
+        }, []);
+
+useEffect(() => {
+    const fetchAdvertisementDetails = async () => {
+        try {
+            const response = await getAdDetail(adId);
+            if (response === null) {
                 message.error("İlan bilgileri alınamadı.");
+                return;
             }
-        };
+            const adDetails = response.advertisement_list[0];
+            setSelectedDistrict(adDetails.districtid_fk); // Update district ID
+            setImageUrls(adDetails.photos || []);
+            const transformedImageFiles = (adDetails.photos || []).map((url, index) => ({
+                uid: `-${index + 1}`,
+                name: `image-${index + 1}.png`,
+                status: 'done',
+                url,
+            }));
+            setImageFiles(transformedImageFiles || []);
+            form.setFieldsValue(adDetails); // Set form values
+        } catch (error) {
+            message.error("İlan bilgileri alınamadı.");
+        }
+    };
 
-        console.log(initialDistrict);
-
-        const fetchInitialData = async () => {
-            try {
-                const utilitiesResponse = await getUtilities();
-                const districtsResponse = await getDistricts();
-                const neighborhoodsResponse = await getNeighborhoods(initialDistrict);
-                const n_roomsResponse = await getN_rooms();
-                setUtilities(utilitiesResponse.utilities);
-                setDistricts(districtsResponse.districts);
-                setNeighborhoods(neighborhoodsResponse.neighborhoods);
-                setN_roomid(n_roomsResponse.n_rooms);
-            } catch (error) {
-                message.error("Başlangıç verileri alınamadı.");
-            }
-        };
-
-        fetchAdvertisementDetails();
-        fetchInitialData();
-        form.setFieldsValue(adDetails);
-    }, [adId, form, initialDistrict, adDetails]);
-
+    fetchAdvertisementDetails();
+}, [adId, form]);
 
 
     const handleN_roomidChange = (value) => {
@@ -162,16 +191,15 @@ console.log(n_roomid);
     };
 
     const handleFormSubmit = async (values) => {
-        console.log(values);
-        // const payload = { ...values, photos: imageUrls, adId };
-        // try {
-        //     await updateAdvertisement(adId, payload);
-        //     message.success("İlan başarıyla güncellendi!");
-        //     navigate(`/advertisements/${adId}`);
-        // } catch (error) {
-        //     console.error(error);
-        //     message.error("İlan güncellenemedi. Lütfen tekrar deneyin.");
-        // }
+        const payload = {...values, photos: imageUrls, userid_fk: userId, adpageid: adId, ad_date: formattedDate};
+        try {
+            await updateAd(payload);
+            message.success("İlan başarıyla güncellendi!");
+            navigate(`/advertisements/${adId}`);
+        } catch (error) {
+            console.error(error);
+            message.error("İlan güncellenemedi. Lütfen tekrar deneyin.");
+        }
     };
 
     return (
@@ -214,11 +242,12 @@ console.log(n_roomid);
                             value={selectedDistrict}
                             onChange={handleDistrictChange}
                         >
-                            {/*{districts.map((option) => (*/}
-                            {/*    <Option key={option.districtid} value={option.districtid}>*/}
-                            {/*        {option.district_name}*/}
-                            {/*    </Option>*/}
-                            {/*))}*/}
+                    {districts && districts.length > 0 && districts.map((option) => (
+                        <Option key={option.districtid} value={option.districtid}>
+                            {option.district_name}
+                        </Option>
+                    ))}
+
                         </Select>
                     </Form.Item>
                     <Form.Item
@@ -232,14 +261,15 @@ console.log(n_roomid);
                             value={selectedNeighborhood}
                             onChange={handleNeighborhoodChange}
                         >
-                            {/*{neighborhoods.map((option) => (*/}
-                            {/*    <Option*/}
-                            {/*        key={option.neighborhoodid}*/}
-                            {/*        value={option.neighborhoodid}*/}
-                            {/*    >*/}
-                            {/*        {option.neighborhood_name}*/}
-                            {/*    </Option>*/}
-                            {/*))}*/}
+                            {neighborhoods && neighborhoods.length > 0 && neighborhoods.map((option) => (
+                                <Option
+                                    key={option.neighborhoodid}
+                                    value={option.neighborhoodid}
+                                >
+                                    {option.neighborhood_name}
+                                </Option>
+                            ))}
+
                         </Select>
                     </Form.Item>
                     <Form.Item
@@ -271,14 +301,15 @@ console.log(n_roomid);
                                     value={selectedN_roomid}
                                     onChange={handleN_roomidChange}
                                 >
-                                    {/*{n_roomid.map((option) => (*/}
-                                    {/*    <Option*/}
-                                    {/*        key={option.n_roomid}*/}
-                                    {/*        value={option.n_roomid}*/}
-                                    {/*    >*/}
-                                    {/*        {option.n_room}*/}
-                                    {/*    </Option>*/}
-                                    {/*))}*/}
+                                   {n_roomid && n_roomid.length > 0 && n_roomid.map((option) => (
+                                        <Option
+                                            key={option.n_roomid}
+                                            value={option.n_roomid}
+                                        >
+                                            {option.n_room}
+                                        </Option>
+                                    ))}
+
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -381,11 +412,12 @@ console.log(n_roomid);
                             value={selectedUtilities}
                             onChange={handleUtilityChange}
                         >
-                            {/*{utilites.map((option) => (*/}
-                            {/*    <Option key={option.utilityid} value={option.utilityid}>*/}
-                            {/*        {option.utility_name}*/}
-                            {/*    </Option>*/}
-                            {/*))}*/}
+                        {utilites && utilites.length > 0 && utilites.map((option) => (
+                            <Option key={option.utilityid} value={option.utilityid}>
+                                {option.utility_name}
+                            </Option>
+                        ))}
+
                         </Select>
                     </Form.Item>
 
