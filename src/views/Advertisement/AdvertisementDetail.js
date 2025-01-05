@@ -257,7 +257,7 @@ export default function AdDetail() {
                   {adData.pet === true ? "Evet" : "Hayır"}
                 </Descriptions.Item>
                 <Descriptions.Item label="Özellikler">
-                  {adData.utilities.join(", ")}
+                  {adData.utilities.join(", ") || "Yok"}
                 </Descriptions.Item>
               </Descriptions>
             </div>

@@ -8,7 +8,7 @@ import {
     Col,
     InputNumber,
     message,
-    Select,
+    Select, Spin,
 } from "antd";
 import {ArrowLeftOutlined, PlusOutlined} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +37,8 @@ export default function EditAdvertisement() {
 
     // Form için
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(true);
+    const [adDetails, setAdDetails] = useState({});
     const [imageFiles, setImageFiles] = useState([]);
     const [imageUrls, setImageUrls] = useState([]);
 
@@ -64,76 +66,97 @@ export default function EditAdvertisement() {
                     message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
                 }
             };
-    
+
             fetchOptions();
         }, []);
-    
-        useEffect(() => {
-            const fetchDistricts = async () => {
-                try {
-                    const response = await getDistricts();
-                    setDistricts(response.districts);
-                } catch (error) {
-                    message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
-                }
-            };
-    
-            fetchDistricts();
-        }, []);
-    
-        useEffect(() => {
-            const fetchNeighborhoods = async () => {
-                if (selectedDistrict === null) return;
-                try {
-                    const response = await getNeighborhoods(selectedDistrict);
-                    setNeighborhoods(response.neighborhoods);
-                } catch (error) {
-                    message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
-                }
-            };
-    
-            fetchNeighborhoods();
-        }, [selectedDistrict]);
-    
-        useEffect(() => {
-            const fetchN_room = async () => {
-                try {
-                    const response = await getN_rooms();
-                    setN_roomid(response.rooms);
-                } catch (error) {
-                    message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
-                }
-            };
-    
-            fetchN_room();
-        }, []);
 
-useEffect(() => {
-    const fetchAdvertisementDetails = async () => {
-        try {
-            const response = await getAdDetail(adId);
-            if (response === null) {
-                message.error("İlan bilgileri alınamadı.");
-                return;
+    useEffect(() => {
+        const fetchDistricts = async () => {
+            try {
+                const response = await getDistricts();
+                setDistricts(response.districts);
+            } catch (error) {
+                message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
             }
-            const adDetails = response.advertisement_list[0];
-            setSelectedDistrict(adDetails.districtid_fk); // Update district ID
-            setImageUrls(adDetails.photos || []);
-            const transformedImageFiles = (adDetails.photos || []).map((url, index) => ({
-                uid: `-${index + 1}`,
-                name: `image-${index + 1}.png`,
-                status: 'done',
-                url,
-            }));
-            setImageFiles(transformedImageFiles || []);
-            form.setFieldsValue(adDetails); // Set form values
-        } catch (error) {
-            message.error("İlan bilgileri alınamadı.");
-        }
-    };
+        };
 
-    fetchAdvertisementDetails();
-}, [adId, form]);
+        fetchDistricts();
+    }, []);
+
+    useEffect(() => {
+        const fetchNeighborhoods = async () => {
+            if (selectedDistrict === null) return;
+            try {
+                const response = await getNeighborhoods(selectedDistrict);
+                setNeighborhoods(response.neighborhoods);
+            } catch (error) {
+                message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+            }
+        };
+
+        fetchNeighborhoods();
+    }, [selectedDistrict]);
+
+    useEffect(() => {
+        const fetchN_room = async () => {
+            try {
+                const response = await getN_rooms();
+                setN_roomid(response.rooms);
+            } catch (error) {
+                message.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+            }
+        };
+
+        fetchN_room();
+    }, []);
+
+    useEffect(() => {
+        const fetchAdvertisementDetails = async () => {
+            try {
+                const response = await getAdDetail(adId);
+                if (response === null) {
+                    message.error("İlan bilgileri alınamadı.");
+                    return;
+                }
+                const adDetails = response.advertisement_list[0];
+                setAdDetails(adDetails);
+                setSelectedDistrict(adDetails.districtid_fk);
+                setImageUrls(adDetails.photos || []);
+                const transformedImageFiles = (adDetails.photos || []).map((url, index) => ({
+                    uid: `-${index + 1}`,
+                    name: `image-${index + 1}.png`,
+                    status: 'done',
+                    url,
+                }));
+                setImageFiles(transformedImageFiles || []);
+                form.setFieldsValue(adDetails);
+            } catch (error) {
+                message.error("İlan bilgileri alınamadı.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAdvertisementDetails();
+    }, [adId, form]);
+
+    useEffect(() => {
+        if (adDetails === null) return;
+        const matchedRoom = n_roomid.find((room) => room.n_room === adDetails.n_room);
+        const n_roomid_fk = matchedRoom ? matchedRoom.n_roomid : undefined;
+        setSelectedN_roomid(n_roomid_fk);
+        const selectedUtilityIds = (adDetails.utilities || [])
+            .map((utilityName) => {
+                const matchedUtility = utilites.find((utility) => utility.utility_name === utilityName);
+                return matchedUtility ? matchedUtility.utilityid : null;
+            })
+            .filter((id) => id !== null);
+        setSelectedUtilities(selectedUtilityIds);
+        const matchedNeighborhood = neighborhoods.find((neighborhood) => neighborhood.neighborhood_name === adDetails.neighborhood);
+        const neighborhoodid_fk = matchedNeighborhood ? matchedNeighborhood.neighborhoodid : null;
+        setSelectedNeighborhood(neighborhoodid_fk);
+        form.setFieldsValue({n_roomid_fk, utilites: selectedUtilityIds, neighborhoodid_fk});
+    }, [adDetails, n_roomid, utilites, neighborhoods, form]);
 
 
     const handleN_roomidChange = (value) => {
@@ -191,6 +214,10 @@ useEffect(() => {
     };
 
     const handleFormSubmit = async (values) => {
+        if (imageUrls.length === 0) {
+            message.error("Lütfen en az bir fotoğraf yükleyin.");
+            return;
+        }
         const payload = {...values, photos: imageUrls, userid_fk: userId, adpageid: adId, ad_date: formattedDate};
         try {
             await updateAd(payload);
@@ -201,6 +228,14 @@ useEffect(() => {
             message.error("İlan güncellenemedi. Lütfen tekrar deneyin.");
         }
     };
+
+    if (loading) {
+        return (
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh'}}>
+                <Spin size="large"/>
+            </div>
+        );
+    }
 
     return (
         <div style={{padding: "20px", minHeight: "100vh"}}>
